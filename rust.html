@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apprendre Rust — la formation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@600;700;800&family=Figtree:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3f1ed;
+    --surface:#ffffff;
+    --surface-2:#faf8f4;
+    --code-bg:#faf8f3;
+    --ink:#2a2622;
+    --ink-soft:#6b6358;
+    --ink-faint:#9a9286;
+    --line:#e7e2da;
+    --line-2:#d9d3c8;
+    --rust:#c45a28;
+    --rust-deep:#a8481c;
+    --teal:#1c6e6a;
+    --teal-deep:#13524f;
+    --amber:#bb8312;
+    --ok:#2f8f5b;
+    --err:#c1402f;
+    --radius:13px;
+    --mono:"Source Code Pro",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --body:"Figtree",system-ui,sans-serif;
+    --disp:"Gabarito","Figtree",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:24px}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17.5px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(640px 460px at 88% -4%,rgba(196,90,40,.10),transparent 62%),radial-gradient(540px 420px at 4% 6%,rgba(28,110,106,.07),transparent 60%)}
+  #top-progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:70;background:linear-gradient(90deg,var(--rust),var(--amber));box-shadow:0 0 8px rgba(196,90,40,.4)}
+  a{color:var(--teal);text-decoration:none;border-bottom:1px solid rgba(28,110,106,.3)}
+  a:hover{border-bottom-color:var(--teal)}
+  code{font-family:var(--mono);font-size:.84em;background:#efe9e0;border:1px solid var(--line-2);padding:.04em .34em;border-radius:5px;color:#7a4a2c}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:64px 28px 24px;overflow:hidden}
+  .hero .crab{position:absolute;top:54px;right:20px;width:172px;height:140px;pointer-events:none}
+  @media(max-width:760px){.hero .crab{width:108px;height:90px;top:46px;right:2px;opacity:.85}}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--rust-deep);background:rgba(196,90,40,.08);border:1px solid rgba(196,90,40,.22);border-radius:999px;padding:7px 14px;font-weight:600}
+  .eyebrow .lk{width:7px;height:7px;border-radius:50%;background:var(--rust)}
+  .hero h1{font-family:var(--disp);font-weight:800;font-size:clamp(40px,8vw,82px);line-height:.96;letter-spacing:-.015em;margin:20px 0 0}
+  .hero h1 .r{color:var(--rust)}
+  .hero .lede{font-size:clamp(17px,2.2vw,21px);color:var(--ink-soft);max-width:650px;margin:20px 0 0;line-height:1.6}
+  .hero .lede b{color:var(--ink);font-weight:600}
+  .hero .sig{margin-top:18px;font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+  .hero>*{opacity:0;transform:translateY(12px);animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards}
+  .hero>*:nth-child(2){animation-delay:.05s}.hero>*:nth-child(3){animation-delay:.13s}.hero>*:nth-child(4){animation-delay:.22s}.hero>*:nth-child(5){animation-delay:.3s}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  /* ---------- LAYOUT ---------- */
+  .layout{position:relative;z-index:1;max-width:1300px;margin:0 auto;display:flex;gap:44px;padding:16px 28px 110px;align-items:flex-start}
+  .sidebar{width:256px;flex:none;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;padding-right:4px}
+  .sidebar .sb-title{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:4px 0 12px}
+  .toc{list-style:none;margin:0;padding:0}
+  .toc .grp{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gc);font-weight:700;margin:17px 0 6px;display:flex;align-items:center;gap:7px}
+  .toc .grp::before{content:"";width:9px;height:9px;border-radius:3px;background:var(--gc)}
+  .toc .grp.s{--gc:var(--teal)} .toc .grp.c{--gc:var(--rust)} .toc .grp.m{--gc:var(--amber)} .toc .grp.i{--gc:var(--teal)} .toc .grp.p{--gc:var(--rust)} .toc .grp.e{--gc:var(--ink-faint)}
+  .toc li a{display:flex;gap:9px;align-items:baseline;padding:5px 0 5px 13px;border-left:2px solid var(--line);margin-left:1px;color:var(--ink-soft);font-size:14px;line-height:1.3;border-bottom:0}
+  .toc li a .num{font-family:var(--mono);font-size:11px;color:var(--ink-faint);min-width:20px;font-weight:600}
+  .toc li a:hover{color:var(--ink)}
+  .toc li a.active{color:var(--rust);border-left-color:var(--rust)}
+  .toc li a.active .num{color:var(--rust)}
+  .sidebar .hint{margin-top:20px;font-size:12px;color:var(--ink-faint);line-height:1.5;border-top:1px solid var(--line);padding-top:13px}
+  .content{flex:1;min-width:0;max-width:824px}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding-top:40px;margin-top:10px;scroll-margin-top:20px}
+  section+section{border-top:1px solid var(--line);margin-top:50px}
+  .modtag{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--fam,var(--rust));font-weight:600}
+  .modtag .dot{width:8px;height:8px;border-radius:3px;background:var(--fam,var(--rust))}
+  .fam-start{--fam:var(--teal)} .fam-core{--fam:var(--rust)} .fam-model{--fam:var(--amber)} .fam-idio{--fam:var(--teal)} .fam-prac{--fam:var(--rust)} .fam-end{--fam:var(--ink-soft)}
+  h2{font-family:var(--disp);font-weight:800;font-size:clamp(28px,4.6vw,44px);line-height:1.0;letter-spacing:-.015em;margin:9px 0 0}
+  h3{font-family:var(--disp);font-weight:700;font-size:21px;margin:28px 0 4px;letter-spacing:-.01em;color:var(--ink)}
+  h4{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.04em;color:var(--fam,var(--rust));text-transform:uppercase;margin:20px 0 4px}
+  p{margin:13px 0;color:var(--ink-soft)}
+  p b,li b{color:var(--ink);font-weight:600}
+  .lead{font-size:19px;color:var(--ink);line-height:1.55}
+  ul,ol{color:var(--ink-soft);padding-left:22px}
+  li{margin:7px 0}
+  .term{color:var(--rust);font-weight:600}
+  .en{font-family:var(--mono);font-size:.82em;color:var(--ink-faint)}
+  .intent{font-size:17.5px;color:var(--ink);margin:14px 0 4px;padding:13px 17px;border-left:3px solid var(--fam,var(--rust));background:var(--surface);border-radius:0 12px 12px 0}
+  .intent b{color:var(--fam,var(--rust))}
+
+  /* ---------- CODE (static) ---------- */
+  .code-wrap{margin:18px 0;border-radius:12px;overflow:hidden;background:var(--code-bg);border:1px solid var(--line-2)}
+  .code-bar{display:flex;align-items:center;gap:9px;padding:8px 13px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+  .code-bar .tag{width:9px;height:9px;border-radius:3px;background:var(--rust);flex:none}
+  .code-bar .fname{font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
+  .code-bar .copy{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);background:var(--surface);border:1px solid var(--line-2);border-radius:6px;padding:4px 10px;cursor:pointer;transition:.16s}
+  .code-bar .copy:hover{color:var(--ink);border-color:var(--rust)}
+  pre{margin:0;padding:15px 16px;overflow-x:auto;font-family:var(--mono);font-size:12.6px;line-height:1.62;tab-size:4}
+  pre code{font-size:12.6px;background:none;border:0;padding:0;color:#3a342c}
+  .hljs{background:transparent;color:#3a342c}
+  .hljs-comment,.hljs-quote{color:#9a9286;font-style:italic}
+  .hljs-keyword,.hljs-selector-tag{color:#b8501f}
+  .hljs-built_in,.hljs-type{color:#1f6b6b}
+  .hljs-string,.hljs-regexp,.hljs-symbol{color:#3f7d3f}
+  .hljs-number,.hljs-literal{color:#9a6a00}
+  .hljs-title,.hljs-title.function_,.hljs-section{color:#146a6a}
+  .hljs-title.class_{color:#8a5cc2}
+  .hljs-meta{color:#b8501f}
+  .hljs-attr,.hljs-attribute,.hljs-property{color:#514a40}
+  .hljs-params{color:#6b6358}
+
+  /* ---------- RUNNER / EXO ---------- */
+  .rs{margin:18px 0;border-radius:12px;overflow:hidden;background:var(--code-bg);border:1px solid var(--line-2)}
+  .rs-bar{display:flex;align-items:center;gap:8px;padding:8px 11px;background:var(--surface-2);border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .rs-bar .fname{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-right:auto;display:flex;align-items:center;gap:7px}
+  .rs-bar .fname::before{content:"";width:9px;height:9px;border-radius:3px;background:var(--rust)}
+  .rs-btn{font-family:var(--mono);font-size:11px;font-weight:600;border-radius:7px;padding:5px 11px;cursor:pointer;transition:.15s;border:1px solid var(--line-2);background:var(--surface);color:var(--ink-soft)}
+  .rs-btn:hover{color:var(--ink);border-color:var(--rust)}
+  .rs-btn.run{background:var(--rust);color:#fff;border-color:var(--rust)}
+  .rs-btn.run:hover{background:var(--rust-deep)}
+  .rs-btn.run:disabled{opacity:.6;cursor:default}
+  .rs-btn.play:hover{border-color:var(--teal);color:var(--teal)}
+  .rs textarea{display:block;width:100%;border:0;background:var(--code-bg);color:#3a342c;font-family:var(--mono);font-size:12.6px;line-height:1.62;padding:15px 16px;resize:vertical;outline:none;tab-size:4;min-height:96px}
+  .rs textarea:focus{background:#fffdf9}
+  .rs-out{margin:0;padding:12px 16px;font-family:var(--mono);font-size:12px;line-height:1.55;white-space:pre-wrap;word-break:break-word;border-top:1px solid var(--line);color:var(--ink-soft)}
+  .rs-out.run{color:var(--ink-faint)}
+  .rs-out.ok{background:rgba(47,143,91,.07);color:#235e3f;border-top-color:rgba(47,143,91,.25)}
+  .rs-out.err{background:rgba(193,64,47,.06);color:#8e3022;border-top-color:rgba(193,64,47,.22)}
+  .rs-out.info{background:rgba(187,131,18,.07);color:#7d5907;border-top-color:rgba(187,131,18,.25)}
+  .rs-out .pl{display:inline-block;margin-top:6px;font-weight:600;border-bottom:1px solid currentColor;cursor:pointer}
+  .reveal{margin-top:8px}
+  .reveal-btn{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--teal);background:rgba(28,110,106,.07);border:1px solid rgba(28,110,106,.22);border-radius:7px;padding:6px 12px;cursor:pointer}
+  .reveal-btn:hover{background:rgba(28,110,106,.13)}
+  .reveal .sol{display:none;margin-top:8px}
+  .reveal.open .sol{display:block}
+  .reveal.open .reveal-btn{color:var(--ink-faint)}
+
+  /* ---------- CALLOUTS ---------- */
+  .callout{margin:20px 0;border:1px solid var(--line-2);border-left-width:3px;border-radius:12px;padding:14px 17px;background:var(--surface);display:flex;gap:13px;align-items:flex-start}
+  .callout .ic{font-size:18px;line-height:1.4;flex:none}
+  .callout .bd{flex:1}.callout p{margin:3px 0;color:var(--ink-soft)}
+  .callout .lab{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;margin-bottom:2px}
+  .c-tip{border-left-color:var(--teal)} .c-tip .lab{color:var(--teal)}
+  .c-warn{border-left-color:var(--rust);background:rgba(196,90,40,.05)} .c-warn .lab{color:var(--rust)}
+  .c-key{border-left-color:var(--amber);background:rgba(187,131,18,.05)} .c-key .lab{color:var(--amber)}
+  .c-note{border-left-color:var(--teal);background:rgba(28,110,106,.05)} .c-note .lab{color:var(--teal-deep)}
+
+  /* ---------- FIGURES ---------- */
+  figure{margin:24px 0}
+  .fig{border:1px solid var(--line-2);border-radius:14px;background:var(--surface);padding:18px}
+  .fig svg{display:block;width:100%;height:auto}
+  figcaption{font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:center;margin-top:10px}
+  .d-lbl{font-family:var(--mono);font-size:11px;fill:var(--ink-soft)}
+  .d-lbl-sm{font-family:var(--mono);font-size:9.5px;fill:var(--ink-faint)}
+  .d-title{font-family:var(--mono);font-size:11px;fill:var(--ink);font-weight:700}
+
+  /* ---------- SHEET ---------- */
+  .sheet{margin:22px 0;border:1px solid var(--line-2);border-radius:12px;overflow:hidden;background:var(--surface)}
+  .sheet table{border-collapse:collapse;width:100%;font-size:13.5px}
+  .sheet th,.sheet td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+  .sheet th{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--rust);background:rgba(196,90,40,.05)}
+  .sheet td:first-child{font-family:var(--mono);font-size:12px;color:var(--ink);white-space:nowrap}
+  .sheet tr:last-child td{border-bottom:0}
+  .sheet td.d{font-family:var(--body);white-space:normal;color:var(--ink-soft)}
+
+  /* ---------- KATA ---------- */
+  .kata{margin:20px 0;border:1px solid var(--line-2);border-radius:13px;background:var(--surface);overflow:hidden}
+  .kata-h{display:flex;align-items:center;gap:11px;padding:13px 16px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+  .kata-h .lvl{font-family:var(--mono);font-size:10.5px;font-weight:700;color:#fff;background:var(--rust);border-radius:6px;padding:3px 9px;flex:none}
+  .kata-h .lvl.l2{background:var(--amber)} .kata-h .lvl.l3{background:var(--teal)}
+  .kata-h h4{margin:0;font-family:var(--disp);font-size:17px;font-weight:700;color:var(--ink);text-transform:none;letter-spacing:0}
+  .kata-b{padding:6px 16px 16px}
+  .kata-b p{font-size:14.5px}
+  .kata-b .code-wrap{margin:14px 0 0}
+
+  #navbtn{display:none}
+  .overlay{display:none}
+  footer{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:24px 28px 64px;border-top:1px solid var(--line);color:var(--ink-faint);font-size:14px}
+  footer b{color:var(--ink-soft)}
+
+  @media(max-width:1000px){
+    body{font-size:16.5px}
+    .layout{display:block;padding:14px 20px 84px}
+    .content{max-width:none}
+    .sidebar{position:fixed;top:0;left:0;height:100dvh;width:84vw;max-width:316px;z-index:50;background:var(--surface);border-right:1px solid var(--line-2);padding:66px 20px 28px 22px;transform:translateX(-104%);transition:transform .3s cubic-bezier(.3,.7,.2,1);max-height:none;box-shadow:8px 0 30px -12px rgba(42,38,34,.22)}
+    .sidebar.open{transform:none}
+    .overlay{display:block;position:fixed;inset:0;background:rgba(42,38,34,.42);z-index:45;opacity:0;pointer-events:none;transition:.3s}
+    .overlay.show{opacity:1;pointer-events:auto}
+    #navbtn{display:flex;align-items:center;justify-content:center;position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:40;width:24px;height:54px;background:rgba(255,255,255,.93);border:1px solid var(--line-2);border-left:0;border-radius:0 10px 10px 0;color:var(--ink-faint);cursor:pointer;box-shadow:2px 0 10px -4px rgba(42,38,34,.25)}
+    #navbtn:hover{color:var(--rust)}
+    #navbtn svg{width:14px;height:14px}
+    .hero{padding:46px 20px 16px}
+  }
+</style>
+</head>
+<body>
+<div id="top-progress"></div>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <svg class="crab" viewBox="0 0 172 140" aria-hidden="true">
+    <!-- pattes -->
+    <g stroke="#a8481c" stroke-width="4" stroke-linecap="round" fill="none">
+      <path d="M52 96 L34 116 M64 102 L52 124 M120 96 L138 116 M108 102 L120 124"/>
+    </g>
+    <!-- bras + pinces -->
+    <g fill="#c45a28" stroke="#a8481c" stroke-width="2">
+      <path d="M44 78 q-22 -2 -30 -22" fill="none" stroke="#a8481c" stroke-width="4"/>
+      <path d="M128 78 q22 -2 30 -22" fill="none" stroke="#a8481c" stroke-width="4"/>
+      <path d="M14 56 q-10 -10 -2 -20 q8 -2 12 6 l-6 4 l8 2 q2 8 -12 8 z"/>
+      <path d="M158 56 q10 -10 2 -20 q-8 -2 -12 6 l6 4 l-8 2 q-2 8 12 8 z"/>
+    </g>
+    <!-- corps -->
+    <ellipse cx="86" cy="78" rx="46" ry="32" fill="#c45a28" stroke="#a8481c" stroke-width="2.5"/>
+    <ellipse cx="86" cy="72" rx="46" ry="26" fill="#d4703c"/>
+    <!-- yeux sur pédoncules -->
+    <line x1="74" y1="50" x2="70" y2="34" stroke="#a8481c" stroke-width="3"/>
+    <line x1="98" y1="50" x2="102" y2="34" stroke="#a8481c" stroke-width="3"/>
+    <circle cx="70" cy="31" r="8" fill="#fff" stroke="#a8481c" stroke-width="2"/>
+    <circle cx="102" cy="31" r="8" fill="#fff" stroke="#a8481c" stroke-width="2"/>
+    <circle cx="71" cy="32" r="3.4" fill="#2a2622"/><circle cx="103" cy="32" r="3.4" fill="#2a2622"/>
+    <path d="M74 84 q12 9 24 0" fill="none" stroke="#a8481c" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+  <span class="eyebrow"><span class="lk"></span>Formation &nbsp;·&nbsp; Le langage Rust 🦀</span>
+  <h1>Apprendre<br><span class="r">Rust</span> en codant</h1>
+  <p class="lede">Un parcours pour développeurs : la <b>possession</b>, l'<b>emprunt</b>, les <b>traits</b>, la gestion d'erreurs sans <code>null</code>… Chaque notion s'accompagne de <b>code exécutable</b> directement depuis la page, et un <b>dojo de katas</b> à faire en local pour ancrer les réflexes.</p>
+  <p class="sig">Le compilateur n'est pas votre adversaire — c'est votre relecteur le plus exigeant.</p>
+</header>
+
+<!-- ============ LAYOUT ============ -->
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-title">Sommaire</div>
+    <ul class="toc" id="toc">
+      <li><a href="#intro"><span class="num">00</span>Pourquoi Rust</a></li>
+      <li><a href="#bases"><span class="num">01</span>Les bases</a></li>
+
+      <li class="grp c">Le cœur de Rust</li>
+      <li><a href="#ownership"><span class="num">02</span>La possession</a></li>
+      <li><a href="#emprunts"><span class="num">03</span>Les emprunts</a></li>
+
+      <li class="grp m">Modéliser</li>
+      <li><a href="#types"><span class="num">04</span>Structs &amp; enums</a></li>
+      <li><a href="#matching"><span class="num">05</span>Pattern matching</a></li>
+      <li><a href="#resultat"><span class="num">06</span>Option &amp; Result</a></li>
+
+      <li class="grp i">Idiomatique</li>
+      <li><a href="#collections"><span class="num">07</span>Collections &amp; itérateurs</a></li>
+      <li><a href="#traits"><span class="num">08</span>Traits &amp; génériques</a></li>
+      <li><a href="#concurrence"><span class="num">09</span>Concurrence</a></li>
+
+      <li class="grp p">Pratiquer</li>
+      <li><a href="#cargo"><span class="num">10</span>Cargo &amp; l'outillage</a></li>
+      <li><a href="#dojo"><span class="num">🥋</span>Katas / Dojo</a></li>
+
+      <li class="grp e">Pour finir</li>
+      <li><a href="#antiseche"><span class="num">≡</span>Antisèche</a></li>
+    </ul>
+    <div class="hint">▶ Exécuter tente de lancer le code dans la page ; sinon « Playground&nbsp;↗ » l'ouvre dans le navigateur. Le dojo se fait en local avec <code>cargo test</code>.</div>
+  </aside>
+
+  <main class="content">
+
+  <!-- ===== 00 INTRO ===== -->
+  <section id="intro" class="fam-start">
+    <div class="modtag"><span class="dot"></span>Démarrer</div>
+    <h2>Pourquoi Rust</h2>
+    <p class="lead">Rust tient une promesse longtemps jugée impossible : la <b>sûreté mémoire</b> d'un langage managé, avec la <b>performance</b> du C, et sans ramasse-miettes. Le secret : un compilateur qui vérifie, à la compilation, ce que les autres laissent exploser à l'exécution.</p>
+
+    <p>Là où d'autres langages détectent les fuites, accès concurrents et déréférencements nuls <i>au runtime</i> (ou jamais), Rust les rend <b>impossibles à compiler</b>. Le prix à payer : apprendre quelques règles nouvelles — la <span class="term">possession</span> et l'<span class="term">emprunt</span> — qui forment le cœur de ce cours.</p>
+
+    <ul>
+      <li><b>Sûreté</b> — pas de <code>null</code>, pas de double libération, pas d'accès hors limites silencieux, pas de data race.</li>
+      <li><b>Performance</b> — pas de GC, contrôle fin de la mémoire, abstractions « à coût zéro ».</li>
+      <li><b>Concurrence sereine</b> — le compilateur refuse les partages de données dangereux entre threads.</li>
+      <li><b>Ergonomie moderne</b> — types algébriques, pattern matching, <code>cargo</code>, des messages d'erreur qui expliquent <i>pourquoi</i>.</li>
+    </ul>
+
+    <div class="callout c-note">
+      <div class="ic">🦀</div>
+      <div class="bd"><span class="lab">Comment exécuter le code</span>
+      <p>Sous chaque exemple, <b>▶ Exécuter</b> tente de compiler dans la page. Si l'aperçu bloque le réseau, un bouton <b>Playground ↗</b> ouvre le même code dans le Rust Playground officiel (qui tourne dans votre navigateur). Les exercices sont <b>éditables</b> : modifiez, relancez.</p></div>
+    </div>
+
+    <div class="callout c-key">
+      <div class="ic">🎯</div>
+      <div class="bd"><span class="lab">L'état d'esprit</span>
+      <p>Au début, le « borrow checker » vous dira souvent non. Ce n'est pas de l'obstruction : il vous montre un bug que vous auriez écrit. Apprendre Rust, c'est apprendre à <b>penser la propriété des données</b> — et ça change durablement votre façon de coder, même ailleurs.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 01 BASES ===== -->
+  <section id="bases" class="fam-start">
+    <div class="modtag"><span class="dot"></span>Démarrer · 01</div>
+    <h2>Les bases</h2>
+    <p class="lead">Quelques repères de syntaxe avant d'attaquer le cœur. Deux idées surprennent souvent : tout est <b>immuable par défaut</b>, et presque tout est une <b>expression</b>.</p>
+
+    <p>On déclare avec <code>let</code> (immuable) ou <code>let mut</code> (mutable). Les types sont statiques mais largement <b>inférés</b>. Le dernier élément d'un bloc, sans point-virgule, en est la <b>valeur</b> — d'où des fonctions sans <code>return</code>.</p>
+
+    <div class="runner"><script type="text/plain">fn main() {
+    let nom = "Rust";              // immuable par défaut
+    let mut essais = 0;            // `mut` = on pourra le modifier
+    essais += 1;
+
+    let r = carre(7);              // appel de fonction
+    println!("Bonjour {nom} ! Essai n°{essais}, 7² = {r}");
+}
+
+fn carre(x: i32) -> i32 {
+    x * x                          // dernière expression = valeur retournée (pas de `;`)
+}</script></div>
+
+    <p>L'interpolation <code>{nom}</code> dans <code>println!</code> (une <b>macro</b>, d'où le <code>!</code>) lit directement les variables. À vous de jouer :</p>
+
+    <div class="exo">
+      <script type="text/plain">fn main() {
+    // 🎯 Exercice : complète `cube` pour qu'elle renvoie x au cube (x³).
+    println!("2³ = {} (attendu 8)", cube(2));
+    println!("3³ = {} (attendu 27)", cube(3));
+}
+
+fn cube(x: i32) -> i32 {
+    0 // ← remplace par la bonne expression
+}</script>
+      <script type="text/plain" data-sol>fn main() {
+    println!("2³ = {} (attendu 8)", cube(2));
+    println!("3³ = {} (attendu 27)", cube(3));
+}
+
+fn cube(x: i32) -> i32 {
+    x * x * x
+}</script>
+    </div>
+  </section>
+
+  <!-- ===== 02 OWNERSHIP ===== -->
+  <section id="ownership" class="fam-core">
+    <div class="modtag"><span class="dot"></span>Le cœur · 02</div>
+    <h2>La possession</h2>
+    <p class="intent"><b>La règle d'or —</b> Chaque valeur a <b>un seul propriétaire</b>. Quand le propriétaire sort de portée, la valeur est libérée. Affecter ou passer la valeur la <b>déplace</b> (move) : l'ancien nom devient invalide.</p>
+
+    <p>C'est ainsi que Rust gère la mémoire <b>sans ramasse-miettes et sans <code>free()</code> manuel</b> : la libération est déterminée à la compilation, par la portée. Conséquence directe et déroutante au début — un déplacement invalide la source :</p>
+
+    <figure>
+      <div class="fig">
+        <svg viewBox="0 0 600 150" role="img" aria-label="Déplacement de valeur">
+          <text x="300" y="22" text-anchor="middle" class="d-title">let s2 = s1;  →  la valeur est déplacée</text>
+          <rect x="40" y="50" width="150" height="56" rx="10" fill="#faf8f3" stroke="#d9d3c8"/>
+          <text x="115" y="44" text-anchor="middle" class="d-lbl-sm">s1</text>
+          <text x="115" y="84" text-anchor="middle" class="d-lbl" fill="#c1402f">✗ invalidé</text>
+          <line x1="52" y1="98" x2="178" y2="58" stroke="#c1402f" stroke-width="1.6"/>
+          <rect x="410" y="50" width="150" height="56" rx="10" fill="rgba(196,90,40,.08)" stroke="#c45a28"/>
+          <text x="485" y="44" text-anchor="middle" class="d-lbl-sm" fill="#c45a28">s2 (propriétaire)</text>
+          <text x="485" y="84" text-anchor="middle" class="d-lbl" fill="#a8481c">"salut"</text>
+          <g stroke="#6b6358" stroke-width="1.6" fill="none" marker-end="url(#am)"><path d="M192 78 L406 78"/></g>
+          <defs><marker id="am" markerWidth="9" markerHeight="9" refX="6.5" refY="4" orient="auto"><path d="M0 1 L6.5 4 L0 7" fill="none" stroke="#6b6358" stroke-width="1.5"/></marker></defs>
+          <text x="300" y="70" text-anchor="middle" class="d-lbl-sm">move</text>
+        </svg>
+      </div>
+      <figcaption>Une seule « étiquette de propriété » à la fois : la donnée n'est jamais libérée deux fois.</figcaption>
+    </figure>
+
+    <div class="runner"><script type="text/plain">fn main() {
+    let s1 = String::from("salut");
+    let s2 = s1;                 // la valeur est DÉPLACÉE vers s2 ; s1 n'est plus valide
+
+    // println!("{s1}");         // ⛔ décommente : le compilateur refuse (s1 a été déplacé)
+    println!("{s2}");            // ✅
+
+    // Pour garder les deux, on COPIE explicitement :
+    let s3 = s2.clone();
+    println!("{s2} et {s3}");    // ✅ clone() duplique les données
+}</script></div>
+
+    <div class="callout c-tip">
+      <div class="ic">🪙</div>
+      <div class="bd"><span class="lab">Types « Copy »</span>
+      <p>Les types simples de taille fixe (entiers, booléens, <code>char</code>…) sont <b>copiés</b>, pas déplacés : <code>let a = 5; let b = a;</code> laisse <code>a</code> bien vivant. Le « move » concerne les valeurs qui possèdent des données sur le tas, comme <code>String</code> ou <code>Vec</code>.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 03 EMPRUNTS ===== -->
+  <section id="emprunts" class="fam-core">
+    <div class="modtag"><span class="dot"></span>Le cœur · 03</div>
+    <h2>Les emprunts</h2>
+    <p class="intent"><b>La règle d'or —</b> Plutôt que déplacer, on peut <b>emprunter</b> une valeur via une référence <code>&amp;</code>. Et à tout instant : soit <b>une seule</b> référence mutable <code>&amp;mut</code>, soit <b>plusieurs</b> références partagées <code>&amp;</code> — jamais les deux.</p>
+
+    <p>Cette règle, vérifiée par le <span class="term">borrow checker</span>, élimine à elle seule les data races et la plupart des bugs d'aliasing : on ne peut pas modifier une donnée pendant que quelqu'un d'autre la lit.</p>
+
+    <figure>
+      <div class="fig">
+        <svg viewBox="0 0 600 160" role="img" aria-label="Règles d'emprunt">
+          <text x="150" y="24" text-anchor="middle" class="d-title" fill="#1f6b6b">Plusieurs &amp; partagés</text>
+          <rect x="110" y="92" width="80" height="40" rx="9" fill="rgba(28,110,106,.1)" stroke="#1c6e6a"/><text x="150" y="117" text-anchor="middle" class="d-lbl" fill="#1c6e6a">donnée</text>
+          <g class="d-lbl-sm" fill="#1c6e6a">
+            <text x="60" y="52" text-anchor="middle">&amp;</text><text x="150" y="52" text-anchor="middle">&amp;</text><text x="240" y="52" text-anchor="middle">&amp;</text>
+          </g>
+          <g stroke="#1c6e6a" stroke-width="1.4" fill="none"><path d="M64 58 L120 90"/><path d="M150 58 L150 90"/><path d="M236 58 L180 90"/></g>
+          <text x="150" y="150" text-anchor="middle" class="d-lbl-sm">lecture seule → OK en parallèle</text>
+
+          <line x1="300" y1="20" x2="300" y2="150" stroke="#e7e2da"/>
+
+          <text x="450" y="24" text-anchor="middle" class="d-title" fill="#c45a28">Un seul &amp;mut</text>
+          <rect x="410" y="92" width="80" height="40" rx="9" fill="rgba(196,90,40,.1)" stroke="#c45a28"/><text x="450" y="117" text-anchor="middle" class="d-lbl" fill="#c45a28">donnée</text>
+          <text x="450" y="52" text-anchor="middle" class="d-lbl-sm" fill="#c45a28">&amp;mut</text>
+          <text x="360" y="52" text-anchor="middle" class="d-lbl-sm" fill="#c1402f">&amp;mut ✗</text>
+          <g stroke="#c45a28" stroke-width="1.6" fill="none"><path d="M450 58 L450 90"/></g>
+          <g stroke="#c1402f" stroke-width="1.4" fill="none" stroke-dasharray="4 3"><path d="M364 58 L420 90"/></g>
+          <text x="450" y="150" text-anchor="middle" class="d-lbl-sm">écriture → exclusif</text>
+        </svg>
+      </div>
+      <figcaption>« Partage XOR mutation » : on lit à plusieurs, ou on écrit à un seul, jamais en même temps.</figcaption>
+    </figure>
+
+    <div class="runner"><script type="text/plain">fn main() {
+    let mut texte = String::from("hello");
+
+    ajoute_point(&mut texte);            // emprunt MUTABLE : on modifie
+    let n = longueur(&texte);            // emprunt PARTAGÉ : on lit
+
+    println!("{texte} ({n} octets)");
+}
+
+fn longueur(s: &String) -> usize {       // emprunte (ne prend pas possession)
+    s.len()
+}
+
+fn ajoute_point(s: &mut String) {        // emprunt mutable
+    s.push('.');
+}</script></div>
+
+    <div class="callout c-note">
+      <div class="ic">🔪</div>
+      <div class="bd"><span class="lab">Tranches (slices)</span>
+      <p>Une <span class="term">slice</span> est un emprunt sur une portion contiguë : <code>&amp;str</code> (vue sur une chaîne), <code>&amp;[T]</code> (vue sur un tableau/Vec). On passe des slices partout : c'est léger (ni copie ni possession) et ça marche pour plusieurs types sources. Les durées de vie <span class="en">(lifetimes)</span> garantissent qu'une slice ne survit jamais à la donnée qu'elle référence — le compilateur les infère presque toujours pour vous.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 04 TYPES ===== -->
+  <section id="types" class="fam-model">
+    <div class="modtag"><span class="dot"></span>Modéliser · 04</div>
+    <h2>Structs &amp; enums</h2>
+    <p class="intent"><b>L'idée —</b> Rust modélise les données avec des <b>structs</b> (un ET : un point a un x ET un y) et des <b>enums</b> (un OU : une forme est un cercle OU un rectangle). Ces « types algébriques » rendent les états impossibles… impossibles à représenter.</p>
+
+    <p>Les enums de Rust ne sont pas de simples constantes : chaque variante peut <b>porter des données</b>. Couplés au <i>pattern matching</i>, ils remplacent avantageusement héritage et valeurs sentinelles.</p>
+
+    <div class="runner"><script type="text/plain">struct Point { x: f64, y: f64 }
+
+enum Forme {
+    Cercle(f64),                       // une variante qui porte un rayon
+    Rectangle { largeur: f64, hauteur: f64 },
+}
+
+fn aire(f: &Forme) -> f64 {
+    match f {                          // on traite chaque variante (voir §05)
+        Forme::Cercle(r) => std::f64::consts::PI * r * r,
+        Forme::Rectangle { largeur, hauteur } => largeur * hauteur,
+    }
+}
+
+fn main() {
+    let centre = Point { x: 0.0, y: 0.0 };
+    let formes = [Forme::Cercle(1.5), Forme::Rectangle { largeur: 2.0, hauteur: 3.0 }];
+
+    println!("centre = ({}, {})", centre.x, centre.y);
+    for f in &formes {
+        println!("aire = {:.2}", aire(f));
+    }
+}</script></div>
+
+    <div class="callout c-tip">
+      <div class="ic">🏷️</div>
+      <div class="bd"><span class="lab">derive</span>
+      <p><code>#[derive(Debug, Clone, PartialEq)]</code> au-dessus d'un type demande au compilateur d'<b>implémenter automatiquement</b> des comportements courants : afficher avec <code>{:?}</code>, cloner, comparer. Un gain de temps constant, et lisible.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 05 MATCHING ===== -->
+  <section id="matching" class="fam-model">
+    <div class="modtag"><span class="dot"></span>Modéliser · 05</div>
+    <h2>Pattern matching</h2>
+    <p class="intent"><b>L'idée —</b> <code>match</code> compare une valeur à des motifs et exécute la branche correspondante. Sa force : il est <b>exhaustif</b> — le compilateur exige que vous traitiez <i>tous</i> les cas. Plus d'oubli silencieux.</p>
+
+    <div class="runner"><script type="text/plain">fn classe(n: i32) -> &'static str {
+    match n {
+        0 => "zéro",
+        1..=9 => "petit",            // un intervalle
+        _ if n < 0 => "négatif",     // une garde conditionnelle
+        _ => "grand",                // cas par défaut (obligatoire ici)
+    }
+}
+
+fn main() {
+    for n in [-3, 0, 7, 42] {
+        println!("{n} → {}", classe(n));
+    }
+
+    // `if let` : un match léger quand un seul cas nous intéresse
+    let maybe = Some(10);
+    if let Some(x) = maybe {
+        println!("on a une valeur : {x}");
+    }
+}</script></div>
+
+    <div class="callout c-key">
+      <div class="ic">✅</div>
+      <div class="bd"><span class="lab">Pourquoi c'est précieux</span>
+      <p>Ajoutez une variante à un enum, et tous les <code>match</code> qui ne la gèrent pas <b>cessent de compiler</b>. Le compilateur vous emmène exactement aux endroits à mettre à jour : le refactoring devient sûr.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 06 RESULTAT ===== -->
+  <section id="resultat" class="fam-model">
+    <div class="modtag"><span class="dot"></span>Modéliser · 06</div>
+    <h2>Option &amp; Result</h2>
+    <p class="intent"><b>L'idée —</b> Rust n'a <b>pas de <code>null</code></b> ni d'exceptions pour le contrôle de flux courant. L'absence se modélise avec <code>Option&lt;T&gt;</code> (<code>Some</code>/<code>None</code>), l'échec avec <code>Result&lt;T, E&gt;</code> (<code>Ok</code>/<code>Err</code>). Les erreurs sont des <b>valeurs</b> qu'on doit traiter.</p>
+
+    <p>Conséquence : impossible d'oublier le cas « ça n'a pas marché » — il est dans le type. Et l'opérateur <code>?</code> propage l'erreur en une touche, gardant le code lisible.</p>
+
+    <div class="runner"><script type="text/plain">fn premier_mot(s: &str) -> Option<&str> {
+    s.split_whitespace().next()      // Some(mot) ou None si vide
+}
+
+fn diviser(a: f64, b: f64) -> Result<f64, String> {
+    if b == 0.0 {
+        return Err("division par zéro".to_string());
+    }
+    Ok(a / b)
+}
+
+// `?` : si Err, on s'arrête et on propage ; sinon on déballe le Ok
+fn enchaine() -> Result<f64, String> {
+    let x = diviser(10.0, 2.0)?;     // x = 5.0
+    let y = diviser(x, 0.0)?;        // ⛔ s'arrête ici et renvoie l'erreur
+    Ok(y)
+}
+
+fn main() {
+    match premier_mot("  bonjour le monde") {
+        Some(m) => println!("premier mot : {m}"),
+        None => println!("(chaîne vide)"),
+    }
+    println!("10 / 2 = {:?}", diviser(10.0, 2.0));
+    println!("enchaîne  = {:?}", enchaine());
+}</script></div>
+
+    <div class="exo">
+      <script type="text/plain">// 🎯 Exercice : renvoie Some(valeur max) du tableau, ou None s'il est vide.
+fn maximum(v: &[i32]) -> Option<i32> {
+    // Astuce : v.iter().copied().max() fait exactement ça…
+    None // ← à remplacer
+}
+
+fn main() {
+    println!("{:?} (attendu Some(9))", maximum(&[3, 9, 1, 7]));
+    println!("{:?} (attendu None)",    maximum(&[]));
+}</script>
+      <script type="text/plain" data-sol>fn maximum(v: &[i32]) -> Option<i32> {
+    v.iter().copied().max()
+}
+
+fn main() {
+    println!("{:?} (attendu Some(9))", maximum(&[3, 9, 1, 7]));
+    println!("{:?} (attendu None)",    maximum(&[]));
+}</script>
+    </div>
+  </section>
+
+  <!-- ===== 07 COLLECTIONS ===== -->
+  <section id="collections" class="fam-idio">
+    <div class="modtag"><span class="dot"></span>Idiomatique · 07</div>
+    <h2>Collections &amp; itérateurs</h2>
+    <p class="intent"><b>L'idée —</b> <code>Vec&lt;T&gt;</code> (liste), <code>String</code> (texte), <code>HashMap&lt;K,V&gt;</code> (dictionnaire) couvrent l'essentiel. Mais le vrai style Rust, ce sont les <b>itérateurs</b> : on décrit une transformation (filtrer, transformer, réduire) plutôt qu'une boucle.</p>
+
+    <p>Les chaînes d'itérateurs sont <b>paresseuses</b> et <b>compilées en code aussi rapide qu'une boucle manuelle</b> (abstraction à coût zéro). Elles se lisent comme une phrase.</p>
+
+    <div class="runner"><script type="text/plain">use std::collections::HashMap;
+
+fn main() {
+    let nombres = vec![1, 2, 3, 4, 5, 6];
+
+    // Itérateurs : garder les pairs, les élever au carré, additionner
+    let total: i32 = nombres.iter()
+        .filter(|n| *n % 2 == 0)     // 2, 4, 6
+        .map(|n| n * n)              // 4, 16, 36
+        .sum();                      // 56
+    println!("somme des carrés pairs = {total}");
+
+    // Compter des occurrences avec une HashMap
+    let mut comptes: HashMap<&str, i32> = HashMap::new();
+    for mot in "le chat le chien le".split_whitespace() {
+        *comptes.entry(mot).or_insert(0) += 1;
+    }
+    println!("{:?}", comptes);       // {"le": 3, "chat": 1, "chien": 1}
+}</script></div>
+
+    <div class="exo">
+      <script type="text/plain">// 🎯 Exercice : renvoie la somme des nombres PAIRS uniquement.
+// Utilise .iter().filter(...).sum() — sans écrire de boucle for.
+fn somme_pairs(v: &[i32]) -> i32 {
+    0 // ← à remplacer
+}
+
+fn main() {
+    println!("{} (attendu 12)", somme_pairs(&[1, 2, 3, 4, 6])); // 2+4+6
+    println!("{} (attendu 0)",  somme_pairs(&[1, 3, 5]));
+}</script>
+      <script type="text/plain" data-sol>fn somme_pairs(v: &[i32]) -> i32 {
+    v.iter().filter(|n| *n % 2 == 0).sum()
+}
+
+fn main() {
+    println!("{} (attendu 12)", somme_pairs(&[1, 2, 3, 4, 6]));
+    println!("{} (attendu 0)",  somme_pairs(&[1, 3, 5]));
+}</script>
+    </div>
+  </section>
+
+  <!-- ===== 08 TRAITS ===== -->
+  <section id="traits" class="fam-idio">
+    <div class="modtag"><span class="dot"></span>Idiomatique · 08</div>
+    <h2>Traits &amp; génériques</h2>
+    <p class="intent"><b>L'idée —</b> Un <b>trait</b> définit un comportement partagé (≈ une interface) ; les <b>génériques</b> écrivent du code qui marche pour tout type respectant un trait. C'est le polymorphisme de Rust — sans héritage.</p>
+
+    <div class="runner"><script type="text/plain">trait Salutation {
+    fn bonjour(&self) -> String;       // contrat : savoir dire bonjour
+}
+
+struct Francais;
+struct Anglais;
+
+impl Salutation for Francais { fn bonjour(&self) -> String { "Bonjour".into() } }
+impl Salutation for Anglais  { fn bonjour(&self) -> String { "Hello".into() } }
+
+// Générique borné : fonctionne pour TOUT type qui implémente Salutation
+fn saluer<T: Salutation>(qui: &T) {
+    println!("{} 👋", qui.bonjour());
+}
+
+fn main() {
+    saluer(&Francais);
+    saluer(&Anglais);
+}</script></div>
+
+    <div class="callout c-note">
+      <div class="ic">🧩</div>
+      <div class="bd"><span class="lab">Des traits partout</span>
+      <p>La bibliothèque standard est bâtie sur des traits : <code>Iterator</code> (boucler), <code>Display</code>/<code>Debug</code> (afficher), <code>From</code>/<code>Into</code> (convertir), <code>Clone</code>, <code>Ord</code>… Implémenter le bon trait, et votre type s'intègre au reste de l'écosystème comme s'il était natif.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 09 CONCURRENCE ===== -->
+  <section id="concurrence" class="fam-idio">
+    <div class="modtag"><span class="dot"></span>Idiomatique · 09</div>
+    <h2>Concurrence sans peur</h2>
+    <p class="intent"><b>L'idée —</b> Les règles de possession s'appliquent <b>aussi entre threads</b>. Résultat : le compilateur refuse de compiler un partage de données qui provoquerait une <span class="term">data race</span>. C'est la « fearless concurrency ».</p>
+
+    <p>Pour communiquer entre threads, le style idiomatique privilégie les <b>canaux</b> (on s'échange des messages) plutôt que la mémoire partagée. Le mot-clé <code>move</code> transfère la possession des données au thread.</p>
+
+    <div class="runner"><script type="text/plain">use std::thread;
+use std::sync::mpsc;                  // multi-producteur, simple consommateur
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    for i in 1..=3 {
+        let tx = tx.clone();
+        thread::spawn(move || {        // `move` : le thread prend possession de i et tx
+            tx.send(i * i).unwrap();   // on envoie un message
+        });
+    }
+    drop(tx);                          // on ferme l'émetteur restant
+
+    let mut carres: Vec<i32> = rx.iter().collect();  // on reçoit tout
+    carres.sort();
+    println!("carrés calculés en parallèle : {:?}", carres);
+}</script></div>
+
+    <div class="callout c-tip">
+      <div class="ic">⚡</div>
+      <div class="bd"><span class="lab">Et l'async ?</span>
+      <p>Pour des milliers de tâches d'E/S (réseau, fichiers), Rust propose <code>async</code>/<code>await</code> avec un <i>runtime</i> comme Tokio : énormément de tâches concurrentes sur peu de threads. Mêmes garanties de sûreté, autre modèle — à explorer une fois les bases solides.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 10 CARGO ===== -->
+  <section id="cargo" class="fam-prac">
+    <div class="modtag"><span class="dot"></span>Pratiquer · 10</div>
+    <h2>Cargo &amp; l'outillage</h2>
+    <p class="intent"><b>L'idée —</b> <code>cargo</code> est le couteau suisse de Rust : il crée, compile, teste, lint et gère les dépendances (les <b>crates</b>). C'est lui qui rend l'écosystème si confortable.</p>
+
+    <div class="code-static" data-file="terminal" data-lang="bash"><script type="text/plain">cargo new mon_projet     # crée un projet (avec git, src/main.rs, Cargo.toml)
+cargo run                # compile puis exécute
+cargo test               # lance tous les tests (#[test])
+cargo clippy             # le linter : rend ton code plus idiomatique
+cargo fmt                # formate automatiquement (fini les débats de style)
+cargo add serde          # ajoute une dépendance depuis crates.io</script></div>
+
+    <p>Les <b>tests</b> vivent dans le code, marqués <code>#[test]</code>, et <code>cargo test</code> les exécute. C'est la base de notre dojo : on écrit une fonction pour faire passer des tests.</p>
+
+    <div class="code-static" data-file="src/lib.rs" data-lang="rust"><script type="text/plain">pub fn double(x: i32) -> i32 {
+    x * 2
+}
+
+#[test]
+fn double_fonctionne() {
+    assert_eq!(double(21), 42);   // échoue bruyamment si ce n'est pas le cas
+}</script></div>
+
+    <div class="callout c-note">
+      <div class="ic">📦</div>
+      <div class="bd"><span class="lab">Modules &amp; crates</span>
+      <p>Le code s'organise en <b>modules</b> (<code>mod</code>, <code>use</code>) au sein d'une <b>crate</b> (l'unité de compilation). Les dépendances externes sont des crates publiées sur <b>crates.io</b> et déclarées dans <code>Cargo.toml</code> — versionnées et résolues par cargo.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== DOJO ===== -->
+  <section id="dojo" class="fam-prac">
+    <div class="modtag"><span class="dot"></span>Pratiquer · 🥋</div>
+    <h2>Katas / Dojo</h2>
+    <p class="lead">La théorie ne suffit pas : Rust s'apprend dans les doigts. Voici un <b>dojo</b> à faire <b>en local</b> — des katas progressifs guidés par des tests. Le principe : la fonction est à écrire, les <code>#[test]</code> disent quand c'est gagné.</p>
+
+    <h3>Mise en place (en local)</h3>
+    <div class="code-static" data-file="terminal" data-lang="bash"><script type="text/plain">cargo new dojo-rust --lib    # un projet bibliothèque
+cd dojo-rust
+# Colle un kata dans src/lib.rs, puis :
+cargo test                   # lance tout
+cargo test fizzbuzz          # ne lance que les tests contenant "fizzbuzz"
+cargo test -- --nocapture    # affiche aussi les println! pendant les tests</script></div>
+
+    <div class="callout c-tip">
+      <div class="ic">🥋</div>
+      <div class="bd"><span class="lab">Règle du dojo</span>
+      <p>Implémentez jusqu'à ce que <b>tous les tests passent au vert</b>, puis lancez <code>cargo clippy</code> et essayez de simplifier. Bonus : un kata sans <code>fn main</code> mais avec des <code>#[test]</code> se lance aussi via le bouton <b>Playground ↗</b> (il exécute <code>cargo test</code>). Les solutions sont masquées : cherchez d'abord.</p></div>
+    </div>
+
+    <!-- Kata 1 -->
+    <div class="kata">
+      <div class="kata-h"><span class="lvl">Kata 1</span><h4>FizzBuzz</h4></div>
+      <div class="kata-b">
+        <p>Renvoie <code>"Fizz"</code> si divisible par 3, <code>"Buzz"</code> par 5, <code>"FizzBuzz"</code> par 15, sinon le nombre en texte. Échauffement : <code>match</code> et tuples.</p>
+        <div class="code-static" data-file="src/lib.rs" data-lang="rust"><script type="text/plain">pub fn fizzbuzz(n: u32) -> String {
+    todo!("à toi de jouer")
+}
+
+#[test]
+fn t_fizzbuzz() {
+    assert_eq!(fizzbuzz(1), "1");
+    assert_eq!(fizzbuzz(3), "Fizz");
+    assert_eq!(fizzbuzz(5), "Buzz");
+    assert_eq!(fizzbuzz(15), "FizzBuzz");
+}</script></div>
+        <div class="reveal">
+          <button class="reveal-btn">Voir une solution</button>
+          <div class="sol"><div class="code-static" data-file="solution.rs" data-lang="rust"><script type="text/plain">pub fn fizzbuzz(n: u32) -> String {
+    match (n % 3, n % 5) {
+        (0, 0) => "FizzBuzz".to_string(),
+        (0, _) => "Fizz".to_string(),
+        (_, 0) => "Buzz".to_string(),
+        _ => n.to_string(),
+    }
+}</script></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kata 2 -->
+    <div class="kata">
+      <div class="kata-h"><span class="lvl l2">Kata 2</span><h4>Inverser l'ordre des mots</h4></div>
+      <div class="kata-b">
+        <p>« le chat dort » → « dort chat le ». Travaille les <b>slices</b> et les <b>itérateurs</b> (<code>split_whitespace</code>, <code>rev</code>, <code>collect</code>, <code>join</code>).</p>
+        <div class="code-static" data-file="src/lib.rs" data-lang="rust"><script type="text/plain">pub fn inverser_mots(phrase: &str) -> String {
+    todo!()
+}
+
+#[test]
+fn t_inverser() {
+    assert_eq!(inverser_mots("le chat dort"), "dort chat le");
+    assert_eq!(inverser_mots("Rust"), "Rust");
+    assert_eq!(inverser_mots(""), "");
+}</script></div>
+        <div class="reveal">
+          <button class="reveal-btn">Voir une solution</button>
+          <div class="sol"><div class="code-static" data-file="solution.rs" data-lang="rust"><script type="text/plain">pub fn inverser_mots(phrase: &str) -> String {
+    phrase.split_whitespace().rev().collect::<Vec<_>>().join(" ")
+}</script></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kata 3 -->
+    <div class="kata">
+      <div class="kata-h"><span class="lvl l3">Kata 3</span><h4>Mot le plus fréquent</h4></div>
+      <div class="kata-b">
+        <p>Renvoie le mot le plus fréquent d'une phrase, ou <code>None</code> si elle est vide. Au menu : <b>HashMap</b>, <b>Option</b> et itérateurs (<code>max_by_key</code>).</p>
+        <div class="code-static" data-file="src/lib.rs" data-lang="rust"><script type="text/plain">pub fn mot_frequent(phrase: &str) -> Option<String> {
+    todo!()
+}
+
+#[test]
+fn t_frequent() {
+    assert_eq!(mot_frequent("le chat le chien le"), Some("le".to_string()));
+    assert_eq!(mot_frequent(""), None);
+}</script></div>
+        <div class="reveal">
+          <button class="reveal-btn">Voir une solution</button>
+          <div class="sol"><div class="code-static" data-file="solution.rs" data-lang="rust"><script type="text/plain">use std::collections::HashMap;
+
+pub fn mot_frequent(phrase: &str) -> Option<String> {
+    let mut comptes: HashMap<&str, u32> = HashMap::new();
+    for mot in phrase.split_whitespace() {
+        *comptes.entry(mot).or_insert(0) += 1;
+    }
+    comptes.into_iter()
+        .max_by_key(|(_, n)| *n)
+        .map(|(mot, _)| mot.to_string())
+}</script></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kata 4 -->
+    <div class="kata">
+      <div class="kata-h"><span class="lvl l3">Kata 4</span><h4>Une pile générique</h4></div>
+      <div class="kata-b">
+        <p>Implémente une <code>Pile&lt;T&gt;</code> (LIFO). <code>pop</code> renvoie <code>Option&lt;T&gt;</code> (<code>None</code> si vide). Au menu : <b>struct générique</b>, <code>Vec</code>, <code>Option</code>.</p>
+        <div class="code-static" data-file="src/lib.rs" data-lang="rust"><script type="text/plain">pub struct Pile<T> {
+    elements: Vec<T>,
+}
+
+impl<T> Pile<T> {
+    pub fn nouvelle() -> Self {
+        todo!()
+    }
+    pub fn empiler(&mut self, valeur: T) {
+        todo!()
+    }
+    pub fn depiler(&mut self) -> Option<T> {
+        todo!()
+    }
+}
+
+#[test]
+fn t_pile() {
+    let mut p = Pile::nouvelle();
+    p.empiler(1);
+    p.empiler(2);
+    assert_eq!(p.depiler(), Some(2));
+    assert_eq!(p.depiler(), Some(1));
+    assert_eq!(p.depiler(), None);
+}</script></div>
+        <div class="reveal">
+          <button class="reveal-btn">Voir une solution</button>
+          <div class="sol"><div class="code-static" data-file="solution.rs" data-lang="rust"><script type="text/plain">pub struct Pile<T> {
+    elements: Vec<T>,
+}
+
+impl<T> Pile<T> {
+    pub fn nouvelle() -> Self {
+        Pile { elements: Vec::new() }
+    }
+    pub fn empiler(&mut self, valeur: T) {
+        self.elements.push(valeur);
+    }
+    pub fn depiler(&mut self) -> Option<T> {
+        self.elements.pop()
+    }
+}</script></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kata 5 -->
+    <div class="kata">
+      <div class="kata-h"><span class="lvl l3">Kata 5</span><h4>Mini-évaluateur</h4></div>
+      <div class="kata-b">
+        <p>Évalue <code>"3 + 4"</code> ou <code>"10 - 7"</code> et renvoie un <code>Result</code> (<code>Err</code> si l'entrée est invalide). Au menu : parsing, <code>Result</code>, l'opérateur <code>?</code>.</p>
+        <div class="code-static" data-file="src/lib.rs" data-lang="rust"><script type="text/plain">pub fn evaluer(expr: &str) -> Result<i64, String> {
+    todo!()
+}
+
+#[test]
+fn t_evaluer() {
+    assert_eq!(evaluer("3 + 4"), Ok(7));
+    assert_eq!(evaluer("10 - 7"), Ok(3));
+    assert!(evaluer("3 * 4").is_err());   // multiplication non gérée
+    assert!(evaluer("bonjour").is_err());
+}</script></div>
+        <div class="reveal">
+          <button class="reveal-btn">Voir une solution</button>
+          <div class="sol"><div class="code-static" data-file="solution.rs" data-lang="rust"><script type="text/plain">pub fn evaluer(expr: &str) -> Result<i64, String> {
+    let parts: Vec<&str> = expr.split_whitespace().collect();
+    let [g, op, d] = parts.as_slice() else {
+        return Err(format!("format attendu « a op b » : {expr:?}"));
+    };
+    let a: i64 = g.parse().map_err(|_| format!("gauche invalide : {g}"))?;
+    let b: i64 = d.parse().map_err(|_| format!("droite invalide : {d}"))?;
+    match *op {
+        "+" => Ok(a + b),
+        "-" => Ok(a - b),
+        autre => Err(format!("opérateur non géré : {autre}")),
+    }
+}</script></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout c-key">
+      <div class="ic">🏅</div>
+      <div class="bd"><span class="lab">Pour aller plus loin</span>
+      <p>Une fois ces katas digérés, enchaînez sur <b>Rustlings</b> (des centaines de petits exercices à corriger localement) et les défis d'<b>Exercism</b> ou d'<b>Advent of Code</b> en Rust. La répétition espacée fait le reste.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== ANTISECHE ===== -->
+  <section id="antiseche" class="fam-end">
+    <div class="modtag"><span class="dot"></span>Pour finir</div>
+    <h2>Antisèche &amp; lectures</h2>
+    <p class="lead">Les réflexes Rust en une page, le vocabulaire, et par où continuer.</p>
+
+    <h3>Mémo syntaxe</h3>
+    <div class="sheet">
+      <table><tbody>
+        <tr><td>let / let mut</td><td class="d">Liaison immuable / mutable. Immuable par défaut.</td></tr>
+        <tr><td>fn f(x: T) -&gt; U</td><td class="d">Fonction typée ; la dernière expression (sans <code>;</code>) est retournée.</td></tr>
+        <tr><td>&amp;T / &amp;mut T</td><td class="d">Emprunt partagé / mutable. Un seul <code>&amp;mut</code> XOR plusieurs <code>&amp;</code>.</td></tr>
+        <tr><td>String / &amp;str</td><td class="d">Chaîne possédée / vue empruntée sur une chaîne.</td></tr>
+        <tr><td>Vec&lt;T&gt; / &amp;[T]</td><td class="d">Liste possédée / slice (vue sur une portion).</td></tr>
+        <tr><td>Option&lt;T&gt;</td><td class="d"><code>Some(v)</code> ou <code>None</code> — l'absence, sans <code>null</code>.</td></tr>
+        <tr><td>Result&lt;T,E&gt;</td><td class="d"><code>Ok(v)</code> ou <code>Err(e)</code> — l'échec comme valeur. <code>?</code> propage.</td></tr>
+        <tr><td>match</td><td class="d">Filtrage exhaustif par motifs ; <code>if let</code> pour un seul cas.</td></tr>
+        <tr><td>struct / enum</td><td class="d">Type produit (ET) / type somme (OU, variantes à données).</td></tr>
+        <tr><td>trait / impl</td><td class="d">Comportement partagé / son implémentation pour un type.</td></tr>
+        <tr><td>#[derive(...)]</td><td class="d">Génère Debug, Clone, PartialEq… automatiquement.</td></tr>
+        <tr><td>.iter().map().filter()</td><td class="d">Pipelines d'itérateurs, paresseux et rapides.</td></tr>
+      </tbody></table>
+    </div>
+
+    <h3>Vocabulaire</h3>
+    <div class="sheet">
+      <table><tbody>
+        <tr><td>Possession</td><td class="d">Chaque valeur a un unique propriétaire ; libérée à la fin de sa portée.</td></tr>
+        <tr><td>Move</td><td class="d">Transfert de possession ; la source devient inutilisable.</td></tr>
+        <tr><td>Emprunt</td><td class="d">Accès temporaire via une référence, sans prendre possession.</td></tr>
+        <tr><td>Borrow checker</td><td class="d">Le vérificateur qui fait respecter les règles d'emprunt à la compilation.</td></tr>
+        <tr><td>Lifetime</td><td class="d">Durée de validité d'une référence ; souvent inférée.</td></tr>
+        <tr><td>Crate / cargo</td><td class="d">Unité de compilation/paquet / l'outil qui gère tout.</td></tr>
+        <tr><td>Trait</td><td class="d">Contrat de comportement partagé entre types (≈ interface).</td></tr>
+      </tbody></table>
+    </div>
+
+    <h3>Pour aller plus loin</h3>
+    <ul>
+      <li><b>The Rust Book</b> — le manuel officiel, gratuit et excellent (doc.rust-lang.org/book).</li>
+      <li><b>Rust by Example</b> — apprendre par des exemples exécutables.</li>
+      <li><b>Rustlings</b> — exercices guidés à corriger en local, parfait après ce dojo.</li>
+      <li><b>Rust Playground</b> &amp; <b>std docs</b> — expérimenter et chercher dans la bibliothèque standard.</li>
+    </ul>
+
+    <div class="callout c-key">
+      <div class="ic">🦀</div>
+      <div class="bd"><span class="lab">Le mot de la fin</span>
+      <p>Rust se mérite les premières semaines, puis se savoure : une fois la possession intégrée, on écrit du code rapide <b>et</b> sûr avec une tranquillité rare. Laissez le compilateur vous guider, pratiquez le dojo, et le déclic viendra. Bon code ! 🦀</p></div>
+    </div>
+  </section>
+
+  </main>
+</div>
+
+<button id="navbtn" aria-label="Ouvrir le sommaire">
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5 L16 12 L9 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<div class="overlay" id="overlay"></div>
+
+<footer>
+  <p><b>Formation Apprendre Rust</b> — possession & emprunt, structs & enums, pattern matching, Option/Result, itérateurs, traits & génériques, concurrence, cargo, et un dojo de katas à faire en local avec <code>cargo test</code>. Code exécutable via le Rust Playground.</p>
+  <p style="margin-top:8px;color:var(--ink-faint)">Le compilateur est votre relecteur le plus exigeant. 🦀</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/rust.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script>
+(function(){
+  function clean(s){ return s.replace(/^\n/,"").replace(/\s+$/,""); }
+  function hl(el){ if (window.hljs){ try{ hljs.highlightElement(el); }catch(e){} } }
+  function copyText(text, btn){
+    var old = btn.textContent;
+    var done = function(){ btn.textContent = "Copié ✓"; setTimeout(function(){ btn.textContent = old; }, 1200); };
+    if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done).catch(fb); } else { fb(); }
+    function fb(){ var ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");done();}catch(e){} document.body.removeChild(ta); }
+  }
+  function playgroundURL(code){ return "https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&code=" + encodeURIComponent(code); }
+  function openPlayground(code){ window.open(playgroundURL(code), "_blank", "noopener"); }
+
+  function runRust(code, out, btn){
+    out.hidden = false; out.className = "rs-out run"; out.textContent = "⏳ Compilation en cours…"; btn.disabled = true;
+    fetch("https://play.rust-lang.org/execute", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ channel:"stable", mode:"debug", edition:"2021", crateType:"bin", tests:false, backtrace:false, code:code })
+    }).then(function(res){
+      if (!res.ok) throw new Error("http"); return res.json();
+    }).then(function(data){
+      if (data.success){
+        out.className = "rs-out ok";
+        var o = (data.stdout && data.stdout.length) ? data.stdout : (data.stderr || "(aucune sortie)");
+        out.textContent = o;
+      } else {
+        out.className = "rs-out err";
+        out.textContent = data.stderr || "Erreur de compilation.";
+      }
+    }).catch(function(){
+      out.className = "rs-out info";
+      out.textContent = "L'exécution directe est bloquée dans cet aperçu. ";
+      var a = document.createElement("span"); a.className = "pl"; a.textContent = "→ Lancer dans le Rust Playground ↗";
+      a.addEventListener("click", function(){ openPlayground(code); });
+      out.appendChild(a);
+    }).finally(function(){ btn.disabled = false; });
+  }
+
+  function makeBar(getCode, opts){
+    var bar = document.createElement("div"); bar.className = "rs-bar";
+    var name = document.createElement("span"); name.className = "fname"; name.textContent = opts.fname || "main.rs";
+    bar.appendChild(name);
+    var out = document.createElement("pre"); out.className = "rs-out"; out.hidden = true;
+    if (opts.reset){
+      var rb = document.createElement("button"); rb.className = "rs-btn"; rb.textContent = "↺ Réinit.";
+      rb.addEventListener("click", opts.reset); bar.appendChild(rb);
+    }
+    var pb = document.createElement("button"); pb.className = "rs-btn play"; pb.textContent = "Playground ↗";
+    pb.addEventListener("click", function(){ openPlayground(getCode()); }); bar.appendChild(pb);
+    var run = document.createElement("button"); run.className = "rs-btn run"; run.textContent = "▶ Exécuter";
+    run.addEventListener("click", function(){ runRust(getCode(), out, run); }); bar.appendChild(run);
+    return { bar: bar, out: out };
+  }
+
+  // ---- RUNNER : code lisible (surligné) + exécution ----
+  document.querySelectorAll(".runner").forEach(function(block){
+    var raw = block.querySelector('script[type="text/plain"]'); if (!raw) return;
+    var code = clean(raw.textContent);
+    var wrap = document.createElement("div"); wrap.className = "rs";
+    var ui = makeBar(function(){ return code; }, { fname: "main.rs" });
+    var pre = document.createElement("pre");
+    var c = document.createElement("code"); c.className = "language-rust"; c.textContent = code; pre.appendChild(c);
+    wrap.appendChild(ui.bar); wrap.appendChild(pre); wrap.appendChild(ui.out);
+    block.replaceWith(wrap); hl(c);
+  });
+
+  // ---- EXO : code éditable + exécution + solution ----
+  document.querySelectorAll(".exo").forEach(function(block){
+    var scripts = block.querySelectorAll('script[type="text/plain"]');
+    if (!scripts.length) return;
+    var starter = clean(scripts[0].textContent);
+    var solScript = block.querySelector('script[data-sol]');
+    var wrap = document.createElement("div"); wrap.className = "rs";
+    var ta = document.createElement("textarea");
+    ta.spellcheck = false; ta.value = starter;
+    ta.rows = Math.min(20, starter.split("\n").length + 1);
+    var ui = makeBar(function(){ return ta.value; }, { fname: "exercice.rs", reset: function(){ ta.value = starter; } });
+    wrap.appendChild(ui.bar); wrap.appendChild(ta); wrap.appendChild(ui.out);
+    block.replaceWith(wrap);
+
+    if (solScript){
+      var sol = clean(solScript.textContent);
+      var rev = document.createElement("div"); rev.className = "reveal";
+      var btn = document.createElement("button"); btn.className = "reveal-btn"; btn.textContent = "Voir une solution";
+      var box = document.createElement("div"); box.className = "sol";
+      var cw = document.createElement("div"); cw.className = "code-wrap";
+      var cb = document.createElement("div"); cb.className = "code-bar";
+      cb.innerHTML = '<span class="tag"></span><span class="fname">solution.rs</span>';
+      var pre = document.createElement("pre"); var c = document.createElement("code"); c.className = "language-rust"; c.textContent = sol;
+      pre.appendChild(c); cw.appendChild(cb); cw.appendChild(pre);
+      box.appendChild(cw); rev.appendChild(btn); rev.appendChild(box);
+      wrap.insertAdjacentElement("afterend", rev);
+      hl(c);
+      btn.addEventListener("click", function(){ rev.classList.toggle("open"); btn.textContent = rev.classList.contains("open") ? "Masquer la solution" : "Voir une solution"; });
+    }
+  });
+
+  // ---- CODE STATIQUE (surligné, non exécuté) ----
+  document.querySelectorAll(".code-static").forEach(function(block){
+    var raw = block.querySelector('script[type="text/plain"]'); if (!raw) return;
+    var code = clean(raw.textContent);
+    var file = block.getAttribute("data-file") || "";
+    var lang = block.getAttribute("data-lang") || "plaintext";
+    var wrap = document.createElement("div"); wrap.className = "code-wrap";
+    var bar = document.createElement("div"); bar.className = "code-bar";
+    bar.innerHTML = '<span class="tag"></span><span class="fname">'+file+'</span>';
+    var btn = document.createElement("button"); btn.className = "copy"; btn.textContent = "Copier";
+    btn.addEventListener("click", function(){ copyText(code, btn); });
+    bar.appendChild(btn);
+    var pre = document.createElement("pre"); var c = document.createElement("code"); c.className = "language-"+lang; c.textContent = code; pre.appendChild(c);
+    wrap.appendChild(bar); wrap.appendChild(pre);
+    block.replaceWith(wrap); hl(c);
+  });
+
+  // ---- KATA solution reveals (static) ----
+  document.querySelectorAll(".kata .reveal").forEach(function(rev){
+    var btn = rev.querySelector(".reveal-btn");
+    btn.addEventListener("click", function(){
+      rev.classList.toggle("open");
+      btn.textContent = rev.classList.contains("open") ? "Masquer la solution" : "Voir une solution";
+    });
+  });
+
+  // ---- progress bar ----
+  var prog = document.getElementById("top-progress");
+  function onScroll(){ var h=document.documentElement; var max=h.scrollHeight-h.clientHeight; prog.style.width=(max>0?(h.scrollTop||document.body.scrollTop)/max*100:0)+"%"; }
+  window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
+
+  // ---- scroll-spy ----
+  var links = Array.prototype.slice.call(document.querySelectorAll("#toc a"));
+  var map = {}; links.forEach(function(a){ map[a.getAttribute("href").slice(1)] = a; });
+  var sections = links.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); }).filter(Boolean);
+  var spy = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){ if (en.isIntersecting){ links.forEach(function(l){ l.classList.remove("active"); }); var a=map[en.target.id]; if(a) a.classList.add("active"); } });
+  }, { rootMargin: "-16% 0px -76% 0px", threshold: 0 });
+  sections.forEach(function(s){ spy.observe(s); });
+
+  // ---- mobile drawer ----
+  var sidebar = document.getElementById("sidebar");
+  var overlay = document.getElementById("overlay");
+  var navbtn = document.getElementById("navbtn");
+  function close(){ sidebar.classList.remove("open"); overlay.classList.remove("show"); navbtn.style.display=""; }
+  function open(){ sidebar.classList.add("open"); overlay.classList.add("show"); navbtn.style.display="none"; }
+  navbtn.addEventListener("click", open);
+  overlay.addEventListener("click", close);
+  sidebar.addEventListener("click", function(e){ if (e.target.tagName === "A") close(); });
+})();
+</script>
+</body>
+</html>
