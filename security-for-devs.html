@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Développement sécurisé — la formation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700&family=Public+Sans:wght@400;500;600;700&family=B612+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eceef2;
+    --surface:#ffffff;
+    --surface-2:#f6f7f9;
+    --code-bg:#f8f9fb;
+    --ink:#161a20;
+    --ink-soft:#4a515c;
+    --ink-faint:#838b97;
+    --line:#e3e6ec;
+    --line-2:#d3d8e0;
+    --red:#d22d26;
+    --red-deep:#9e1d18;
+    --green:#1f9d57;
+    --green-deep:#147544;
+    --amber:#b8730a;
+    --steel:#2b54c9;
+    --steel-soft:#5878d8;
+    --radius:13px;
+    --mono:"B612 Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --body:"Public Sans",system-ui,sans-serif;
+    --disp:"Saira Condensed","Public Sans",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:24px}
+  body{margin:0;background:var(--bg);color:#161a20;font-family:var(--body);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:repeating-linear-gradient(45deg,rgba(210,45,38,.03) 0 12px,transparent 12px 24px);
+    mask-image:linear-gradient(180deg,#000,transparent 28%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 28%)}
+  #top-progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:70;background:linear-gradient(90deg,#d22d26,#b8730a);box-shadow:0 0 8px rgba(210,45,38,.4)}
+  a{color:#2b54c9;text-decoration:none;border-bottom:1px solid rgba(43,84,201,.28)}
+  a:hover{border-bottom-color:#2b54c9}
+  code{font-family:var(--mono);font-size:.84em;background:#eef0f4;border:1px solid #d3d8e0;padding:.04em .34em;border-radius:5px;color:#3a3f48}
+
+  /* ---------- LANG TOGGLE ---------- */
+  .langtoggle{display:inline-flex;align-items:center;gap:4px;background:var(--surface);border:1px solid #d3d8e0;border-radius:999px;padding:4px}
+  .langtoggle .lt-label{font-family:var(--mono);font-size:11px;color:#838b97;padding:0 8px 0 6px}
+  .lb{font-family:var(--mono);font-size:12.5px;font-weight:700;color:#4a515c;background:transparent;border:0;border-radius:999px;padding:6px 14px;cursor:pointer;transition:.16s;letter-spacing:.02em}
+  .lb:hover{color:#161a20}
+  body[data-lang="ts"] .lb[data-set="ts"],body[data-lang="py"] .lb[data-set="py"]{background:#161a20;color:#fff}
+  .langtoggle.fixed{position:fixed;top:14px;right:14px;z-index:62;box-shadow:0 6px 20px -8px rgba(20,26,32,.35)}
+  .langtoggle.fixed .lb{padding:6px 12px}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:64px 28px 24px;overflow:hidden}
+  .hero .shield{position:absolute;top:40px;right:18px;width:188px;height:188px;opacity:.9;pointer-events:none}
+  @media(max-width:760px){.hero .shield{width:120px;height:120px;top:54px;right:-6px;opacity:.5}}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:#d22d26;background:rgba(210,45,38,.07);border:1px solid rgba(210,45,38,.2);border-radius:999px;padding:7px 14px}
+  .eyebrow .lk{width:7px;height:7px;border-radius:50%;background:#d22d26}
+  .hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(40px,8vw,86px);line-height:.96;letter-spacing:.004em;margin:20px 0 0;text-transform:uppercase}
+  .hero h1 .o{color:#d22d26}
+  .hero .lede{font-size:clamp(17px,2.2vw,20.5px);color:#4a515c;max-width:640px;margin:20px 0 0;line-height:1.6}
+  .hero .lede b{color:#161a20;font-weight:600}
+  .hero .herobar{margin-top:24px;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+  .hero .sig{font-family:var(--mono);font-size:11.5px;color:#838b97}
+  .hero>*{opacity:0;transform:translateY(12px);animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards}
+  .hero>*:nth-child(2){animation-delay:.05s}.hero>*:nth-child(3){animation-delay:.13s}.hero>*:nth-child(4){animation-delay:.22s}.hero>*:nth-child(5){animation-delay:.3s}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  /* ---------- LAYOUT ---------- */
+  .layout{position:relative;z-index:1;max-width:1300px;margin:0 auto;display:flex;gap:44px;padding:16px 28px 110px;align-items:flex-start}
+  .sidebar{width:262px;flex:none;position:sticky;top:16px;max-height:calc(100vh-32px);overflow:auto;padding-right:4px}
+  .sidebar .sb-title{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#838b97;margin:4px 0 12px}
+  .toc{list-style:none;margin:0;padding:0}
+  .toc .grp{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gc);font-weight:700;margin:17px 0 6px;display:flex;align-items:center;gap:7px}
+  .toc .grp::before{content:"";width:9px;height:9px;border-radius:2px;background:var(--gc)}
+  .toc .grp.f{--gc:#2b54c9} .toc .grp.o{--gc:#d22d26} .toc .grp.p{--gc:#1f9d57} .toc .grp.e{--gc:#838b97}
+  .toc li a{display:flex;gap:9px;align-items:baseline;padding:5px 0 5px 13px;border-left:2px solid #e3e6ec;margin-left:1px;color:#4a515c;font-size:13.5px;line-height:1.3;border-bottom:0}
+  .toc li a .num{font-family:var(--mono);font-size:10.5px;color:#838b97;min-width:26px;font-weight:700}
+  .toc li a:hover{color:#161a20}
+  .toc li a.active{color:#d22d26;border-left-color:#d22d26}
+  .toc li a.active .num{color:#d22d26}
+  .sidebar .hint{margin-top:20px;font-size:12px;color:#838b97;line-height:1.5;border-top:1px solid #e3e6ec;padding-top:13px}
+  .content{flex:1;min-width:0;max-width:820px}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding-top:40px;margin-top:10px;scroll-margin-top:20px}
+  section+section{border-top:1px solid #e3e6ec;margin-top:50px}
+  .modtag{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--fam,#2b54c9);font-weight:700}
+  .modtag .code{font-weight:700;background:var(--fam,#2b54c9);color:#fff;border:0;padding:2px 8px;border-radius:6px;font-size:11px;letter-spacing:.04em}
+  .fam-found{--fam:#2b54c9} .fam-owasp{--fam:#d22d26} .fam-prac{--fam:#1f9d57} .fam-end{--fam:#4a515c}
+  h2{font-family:var(--disp);font-weight:700;font-size:clamp(28px,4.6vw,46px);line-height:1.0;letter-spacing:.006em;margin:9px 0 0;text-transform:uppercase}
+  h3{font-family:var(--disp);font-weight:600;font-size:22px;margin:28px 0 4px;text-transform:uppercase;letter-spacing:.01em;color:#161a20}
+  h4{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.04em;color:var(--fam,#2b54c9);text-transform:uppercase;margin:20px 0 4px}
+  p{margin:13px 0;color:#4a515c}
+  p b,li b{color:#161a20;font-weight:600}
+  .lead{font-size:19px;color:#161a20;line-height:1.55}
+  ul,ol{color:#4a515c;padding-left:22px}
+  li{margin:7px 0}
+  .new-badge{display:inline-block;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.06em;color:#fff;background:#1f9d57;border-radius:5px;padding:2px 7px;vertical-align:middle;margin-left:6px;text-transform:uppercase}
+  .intent{font-size:17px;color:#161a20;margin:14px 0 4px;padding:13px 17px;border-left:3px solid var(--fam,#2b54c9);background:var(--surface);border-radius:0 12px 12px 0}
+  .intent b{color:var(--fam,#2b54c9)}
+
+  /* ---------- CODE ---------- */
+  .code-wrap{margin:18px 0;border-radius:12px;overflow:hidden;background:var(--code-bg);border:1px solid #d3d8e0}
+  .code-bar{display:flex;align-items:center;gap:9px;padding:8px 13px;background:var(--surface-2);border-bottom:1px solid #e3e6ec}
+  .code-bar .tag{width:9px;height:9px;border-radius:2px;background:#838b97;flex:none}
+  .code-bar .fname{font-family:var(--mono);font-size:11px;color:#838b97}
+  .code-bar .copy{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:#4a515c;background:var(--surface);border:1px solid #d3d8e0;border-radius:6px;padding:4px 10px;cursor:pointer;transition:.16s}
+  .code-bar .copy:hover{color:#161a20;border-color:#2b54c9}
+  pre{margin:0;padding:15px 16px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.62;tab-size:2}
+  pre code{font-size:12.5px;background:none;border:0;padding:0;color:#2c313a}
+  .hljs{background:transparent;color:#2c313a}
+  .hljs-comment,.hljs-quote{color:#8a93a1;font-style:italic}
+  .hljs-keyword,.hljs-selector-tag{color:#1e49c2}
+  .hljs-built_in,.hljs-type{color:#0e7490}
+  .hljs-string,.hljs-regexp,.hljs-symbol{color:#157347}
+  .hljs-number,.hljs-literal{color:#b45309}
+  .hljs-title,.hljs-title.function_,.hljs-section{color:#0b6e8c}
+  .hljs-title.class_{color:#9333a8}
+  .hljs-attr,.hljs-attribute,.hljs-property{color:#3a3f48}
+  .hljs-params{color:#525a66}
+  .hljs-meta{color:#8a93a1}
+  body[data-lang="ts"] .only-py{display:none}
+  body[data-lang="py"] .only-ts{display:none}
+
+  /* ---------- CALLOUTS ---------- */
+  .callout{margin:20px 0;border:1px solid #d3d8e0;border-left-width:3px;border-radius:12px;padding:14px 17px;background:var(--surface);display:flex;gap:13px;align-items:flex-start}
+  .callout .ic{font-size:18px;line-height:1.4;flex:none}
+  .callout .bd{flex:1}.callout p{margin:3px 0;color:#4a515c}
+  .callout .lab{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;margin-bottom:2px}
+  .c-tip{border-left-color:#2b54c9} .c-tip .lab{color:#2b54c9}
+  .c-warn{border-left-color:#d22d26;background:rgba(210,45,38,.05)} .c-warn .lab{color:#d22d26}
+  .c-key{border-left-color:#b8730a;background:rgba(184,115,10,.05)} .c-key .lab{color:#b8730a}
+  .c-anssi{border-left-color:#1f9d57;background:rgba(31,157,87,.05)} .c-anssi .lab{color:#147544}
+  .c-attack{border-left-color:#9e1d18;background:rgba(158,29,24,.06)} .c-attack .lab{color:#9e1d18}
+
+  /* ---------- COMPARE ---------- */
+  .compare{margin:20px 0;border:1px solid #d3d8e0;border-radius:12px;overflow:hidden;background:var(--surface)}
+  .ctabs{display:flex;border-bottom:1px solid #e3e6ec}
+  .ctab{flex:1;font-family:var(--mono);font-size:12px;font-weight:700;color:#838b97;background:transparent;border:0;padding:11px 10px;cursor:pointer;transition:.16s;border-bottom:2px solid transparent;letter-spacing:.02em}
+  .ctab:hover{color:#4a515c}
+  .ctab.active.bad{color:#d22d26;border-bottom-color:#d22d26;background:rgba(210,45,38,.06)}
+  .ctab.active.good{color:#147544;border-bottom-color:#1f9d57;background:rgba(31,157,87,.06)}
+  .cpanel{display:none}.cpanel.active{display:block;animation:fade .22s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .cpanel .code-wrap{margin:0;border:0;border-radius:0}
+  .cnote{padding:10px 16px;font-size:13.5px;border-top:1px solid #e3e6ec;color:#4a515c}
+  .cnote.bad{background:rgba(210,45,38,.05)} .cnote.bad b{color:#d22d26}
+  .cnote.good{background:rgba(31,157,87,.05)} .cnote.good b{color:#147544}
+
+  /* ---------- USAGE / DOS ---------- */
+  .dos{margin:16px 0;border:1px solid #e3e6ec;border-radius:12px;background:var(--surface);overflow:hidden}
+  .dos p{margin:0;padding:11px 16px;font-size:14.5px;color:#4a515c}
+  .dos p+p{border-top:1px solid #e3e6ec}
+  .dos .y::before{content:"✔ ";color:#1f9d57;font-weight:700} .dos .y b{color:#147544}
+  .dos .n::before{content:"✘ ";color:#d22d26;font-weight:700} .dos .n b{color:#d22d26}
+
+  /* ---------- FIGURES ---------- */
+  figure{margin:24px 0}
+  .fig{border:1px solid #d3d8e0;border-radius:14px;background:var(--surface);padding:18px}
+  .fig svg{display:block;width:100%;height:auto}
+  figcaption{font-family:var(--mono);font-size:11px;color:#838b97;text-align:center;margin-top:10px}
+  .d-lbl{font-family:var(--mono);font-size:11px;fill:#4a515c}
+  .d-lbl-sm{font-family:var(--mono);font-size:9.5px;fill:#838b97}
+  .d-title{font-family:var(--mono);font-size:11px;fill:#161a20;font-weight:700}
+
+  /* ---------- SHEET ---------- */
+  .sheet{margin:22px 0;border:1px solid #d3d8e0;border-radius:12px;overflow:hidden;background:var(--surface)}
+  .sheet table{border-collapse:collapse;width:100%;font-size:13.5px}
+  .sheet th,.sheet td{text-align:left;padding:9px 13px;border-bottom:1px solid #e3e6ec;vertical-align:top}
+  .sheet th{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#d22d26;background:rgba(210,45,38,.05)}
+  .sheet td:first-child{font-family:var(--mono);font-size:12px;color:#161a20;white-space:nowrap;font-weight:700}
+  .sheet tr:last-child td{border-bottom:0}
+  .sheet .nw{white-space:normal}
+
+  /* ---------- STEPS / CHECKLIST ---------- */
+  .steps{margin:22px 0;display:grid;gap:10px;counter-reset:s}
+  .step{display:flex;gap:14px;align-items:flex-start;border:1px solid #e3e6ec;border-radius:12px;padding:13px 16px;background:var(--surface)}
+  .step::before{counter-increment:s;content:counter(s);font-family:var(--disp);font-weight:700;font-size:20px;color:#d22d26;line-height:1.2;flex:none;min-width:24px}
+  .step h5{margin:0 0 2px;font-weight:700;font-size:16px;color:#161a20}
+  .step p{margin:0;font-size:14px;color:#4a515c}
+  .checklist{margin:20px 0;display:grid;gap:8px}
+  .ck{display:flex;gap:12px;align-items:flex-start;border:1px solid #e3e6ec;border-radius:11px;padding:11px 15px;background:var(--surface)}
+  .ck .box{flex:none;width:17px;height:17px;border:1.5px solid #1f9d57;border-radius:5px;margin-top:3px;position:relative}
+  .ck .box::after{content:"✓";position:absolute;inset:-4px 0 0 1px;color:#1f9d57;font-size:13px;font-weight:700}
+  .ck span{color:#161a20;font-size:14.5px}
+
+  #navbtn{display:none}
+  .overlay{display:none}
+  footer{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:24px 28px 64px;border-top:1px solid #e3e6ec;color:#838b97;font-size:14px}
+  footer b{color:#4a515c}
+
+  @media(max-width:1000px){
+    body{font-size:16px}
+    .layout{display:block;padding:14px 20px 84px}
+    .content{max-width:none}
+    .sidebar{position:fixed;top:0;left:0;height:100dvh;width:84vw;max-width:316px;z-index:50;background:var(--surface);border-right:1px solid #d3d8e0;padding:66px 20px 28px 22px;transform:translateX(-104%);transition:transform .3s cubic-bezier(.3,.7,.2,1);max-height:none;box-shadow:8px 0 30px -12px rgba(20,26,32,.25)}
+    .sidebar.open{transform:none}
+    .overlay{display:block;position:fixed;inset:0;background:rgba(20,26,32,.4);z-index:45;opacity:0;pointer-events:none;transition:.3s}
+    .overlay.show{opacity:1;pointer-events:auto}
+    /* chevron discret : languette d'ouverture sur le bord gauche */
+    #navbtn{display:flex;align-items:center;justify-content:center;position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:40;
+      width:24px;height:54px;background:rgba(255,255,255,.92);border:1px solid #d3d8e0;border-left:0;border-radius:0 10px 10px 0;
+      color:#838b97;cursor:pointer;box-shadow:2px 0 10px -4px rgba(20,26,32,.25);backdrop-filter:blur(4px);transition:color .15s,background .15s}
+    #navbtn:hover{color:#161a20;background:#fff}
+    #navbtn svg{width:14px;height:14px}
+    .hero{padding:46px 20px 16px}
+    .langtoggle.fixed{top:10px;right:10px}
+  }
+</style>
+</head>
+<body data-lang="ts">
+<div id="top-progress"></div>
+
+<div class="langtoggle fixed" aria-label="Langage des exemples de code">
+  <button class="lb" data-set="ts">TS</button>
+  <button class="lb" data-set="py">Py</button>
+</div>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <svg class="shield" viewBox="0 0 188 188" aria-hidden="true">
+    <path d="M94 14 L160 38 V96 C160 138 130 164 94 176 C58 164 28 138 28 96 V38 Z" fill="rgba(210,45,38,.05)" stroke="#d22d26" stroke-width="2"/>
+    <path d="M94 30 L146 49 V96 C146 129 123 150 94 160 C65 150 42 129 42 96 V49 Z" fill="none" stroke="rgba(210,45,38,.35)" stroke-width="1.2"/>
+    <rect x="78" y="88" width="32" height="26" rx="4" fill="none" stroke="#d22d26" stroke-width="2"/>
+    <path d="M83 88 V79 a11 11 0 0 1 22 0 V88" fill="none" stroke="#d22d26" stroke-width="2"/>
+    <circle cx="94" cy="99" r="3.4" fill="#d22d26"/><rect x="92.6" y="99" width="2.8" height="9" rx="1.4" fill="#d22d26"/>
+  </svg>
+  <span class="eyebrow"><span class="lk"></span>Formation &nbsp;·&nbsp; Sécurité applicative · OWASP &amp; ANSSI</span>
+  <h1>Développer<br><span class="o">sans se faire</span><br>trouer</h1>
+  <p class="lede">Une plongée concrète dans le <b>développement sécurisé</b> : les grands principes (façon ANSSI), l'<b>OWASP Top 10:2025</b> vulnérabilité par vulnérabilité, et pour chaque faille du code <b>avant / après</b> — à lire en TypeScript ou en Python, au choix.</p>
+  <div class="herobar">
+    <div class="langtoggle" role="group" aria-label="Langage des exemples">
+      <span class="lt-label">Exemples en</span>
+      <button class="lb" data-set="ts">TypeScript</button>
+      <button class="lb" data-set="py">Python</button>
+    </div>
+    <span class="sig">Penser comme un attaquant pour coder comme un défenseur.</span>
+  </div>
+</header>
+
+<!-- ============ LAYOUT ============ -->
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-title">Sommaire</div>
+    <ul class="toc" id="toc">
+      <li><a href="#intro"><span class="num">00</span>L'état d'esprit</a></li>
+      <li><a href="#principes"><span class="num">01</span>Les grands principes</a></li>
+
+      <li class="grp o">OWASP Top 10:2025</li>
+      <li><a href="#a01"><span class="num">A01</span>Contrôle d'accès</a></li>
+      <li><a href="#a02"><span class="num">A02</span>Mauvaise configuration</a></li>
+      <li><a href="#a03"><span class="num">A03</span>Chaîne d'appro.</a></li>
+      <li><a href="#a04"><span class="num">A04</span>Cryptographie</a></li>
+      <li><a href="#a05"><span class="num">A05</span>Injection</a></li>
+      <li><a href="#a06"><span class="num">A06</span>Conception</a></li>
+      <li><a href="#a07"><span class="num">A07</span>Authentification</a></li>
+      <li><a href="#a08"><span class="num">A08</span>Intégrité</a></li>
+      <li><a href="#a09"><span class="num">A09</span>Journalisation</a></li>
+      <li><a href="#a10"><span class="num">A10</span>Conditions except.</a></li>
+
+      <li class="grp p">En pratique</li>
+      <li><a href="#entrees"><span class="num">›</span>Entrées &amp; sorties</a></li>
+      <li><a href="#secrets"><span class="num">›</span>Secrets &amp; config</a></li>
+      <li><a href="#sdlc"><span class="num">›</span>Le cycle sécurisé</a></li>
+      <li><a href="#anssi"><span class="num">›</span>Le réflexe ANSSI</a></li>
+
+      <li class="grp e">Pour finir</li>
+      <li><a href="#checklist"><span class="num">✓</span>Checklist</a></li>
+      <li><a href="#antiseche"><span class="num">≡</span>Antisèche</a></li>
+    </ul>
+    <div class="hint">Bleu acier = principes · rouge = OWASP · vert = pratique. Le sélecteur TS/Python (en haut) rebascule tous les exemples.</div>
+  </aside>
+
+  <main class="content">
+
+  <!-- ===== 00 INTRO ===== -->
+  <section id="intro" class="fam-found">
+    <div class="modtag"><span class="code">00</span>Fondations</div>
+    <h2>L'état d'esprit</h2>
+    <p class="lead">La sécurité n'est pas une fonctionnalité qu'on ajoute à la fin : c'est une <b>propriété du système</b>, qui se gagne (ou se perd) à chaque ligne. Le premier réflexe à acquérir : penser comme celui qui voudra vous attaquer.</p>
+
+    <p>Un développeur écrit le chemin « normal ». Un attaquant, lui, explore tous les autres : l'entrée qu'on n'a pas validée, l'étape qu'on a supposée impossible, l'erreur qui révèle un secret. <b>Le code sécurisé n'est pas du code qui marche — c'est du code qui résiste à un usage hostile.</b></p>
+
+    <p>Trois idées guident toute la formation : <b>décaler la sécurité vers la gauche</b> (« shift left » : penser aux risques dès la conception, pas en audit final), <b>supposer la compromission</b> (« assume breach » : que se passe-t-il quand une couche tombe ?), et <b>ne jamais faire confiance à une entrée</b>, d'où qu'elle vienne.</p>
+
+    <div class="callout c-attack">
+      <div class="ic">🕵️</div>
+      <div class="bd"><span class="lab">Vu côté attaquant</span>
+      <p>« Je ne vais pas suivre votre formulaire. Je vais envoyer un champ que vous n'attendez pas, un identifiant qui n'est pas le mien, une valeur cent fois trop grande, ou rejouer votre requête. Je cherche l'hypothèse que vous avez oublié de vérifier. » — Ce point de vue, c'est le fil rouge de l'OWASP Top 10.</p></div>
+    </div>
+
+    <p>Ce parcours suit deux référentiels complémentaires : l'<b>OWASP Top 10:2025</b>, qui classe les dix risques applicatifs les plus critiques, et les <b>principes de l'ANSSI</b> (défense en profondeur, moindre privilège, hygiène), qui structurent une posture durable. On les traduit en code concret — en TypeScript ou en Python.</p>
+  </section>
+
+  <!-- ===== 01 PRINCIPES ===== -->
+  <section id="principes" class="fam-found">
+    <div class="modtag"><span class="code">01</span>Fondations</div>
+    <h2>Les grands principes</h2>
+    <p class="lead">Avant les failles, les fondations. Ces principes — au cœur des recommandations de l'ANSSI et du « secure by design » — vous évitent des familles entières de vulnérabilités.</p>
+
+    <figure>
+      <div class="fig">
+        <svg viewBox="0 0 540 300" role="img" aria-label="Défense en profondeur">
+          <text x="270" y="22" text-anchor="middle" class="d-title">Défense en profondeur — plusieurs couches, jamais une seule</text>
+          <rect x="22"  y="36" width="496" height="250" rx="14" fill="rgba(43,84,201,.05)" stroke="#2b54c9" stroke-width="1.4"/>
+          <text x="270" y="54" text-anchor="middle" class="d-lbl" fill="#2b54c9">Réseau &amp; périmètre — pare-feu, TLS, segmentation</text>
+          <rect x="74"  y="66" width="392" height="200" rx="12" fill="rgba(43,84,201,.05)" stroke="#5878d8" stroke-width="1.2"/>
+          <text x="270" y="84" text-anchor="middle" class="d-lbl" fill="#5878d8">Hôte &amp; OS — durcissement, moindre privilège, à jour</text>
+          <rect x="132" y="96" width="276" height="170" rx="11" fill="rgba(184,115,10,.06)" stroke="#b8730a" stroke-width="1.2"/>
+          <text x="270" y="114" text-anchor="middle" class="d-lbl" fill="#b8730a">Application — validation, authz, encodage</text>
+          <rect x="192" y="128" width="156" height="138" rx="10" fill="rgba(210,45,38,.07)" stroke="#d22d26" stroke-width="1.4"/>
+          <text x="270" y="146" text-anchor="middle" class="d-lbl" fill="#d22d26">Données — chiffrées</text>
+          <g transform="translate(270,196)">
+            <rect x="-15" y="-2" width="30" height="24" rx="4" fill="none" stroke="#d22d26" stroke-width="2"/>
+            <path d="M-10 -2 V-10 a10 10 0 0 1 20 0 V-2" fill="none" stroke="#d22d26" stroke-width="2"/>
+            <circle cx="0" cy="9" r="3" fill="#d22d26"/>
+          </g>
+          <text x="270" y="240" text-anchor="middle" class="d-lbl-sm" fill="#d22d26">les « bijoux »</text>
+        </svg>
+      </div>
+      <figcaption>Une seule barrière finit par tomber. L'attaquant qui franchit une couche doit en trouver une autre derrière.</figcaption>
+    </figure>
+
+    <h3>Le socle à mémoriser</h3>
+    <ul>
+      <li><b>Défense en profondeur</b> — empilez les protections ; aucune n'est censée être la dernière.</li>
+      <li><b>Moindre privilège</b> — chaque composant, compte ou jeton n'a que les droits strictement nécessaires, pas un de plus.</li>
+      <li><b>Réduire la surface d'attaque</b> — moins de code, d'endpoints, de dépendances et d'options exposés = moins à défendre.</li>
+      <li><b>Sécurisé par défaut</b> — l'état initial est le plus fermé ; on ouvre explicitement, jamais l'inverse.</li>
+      <li><b>Ne jamais faire confiance aux entrées</b> — tout ce qui vient de l'extérieur est suspect jusqu'à validation.</li>
+      <li><b>Échouer en sécurité</b> — en cas d'erreur, on refuse l'accès (fail-closed), on ne l'accorde pas.</li>
+      <li><b>Simplicité</b> — un design simple se vérifie ; la complexité cache les failles.</li>
+      <li><b>Tracer</b> — ce qu'on ne journalise pas, on ne le verra jamais venir.</li>
+    </ul>
+
+    <div class="callout c-anssi">
+      <div class="ic">🛡️</div>
+      <div class="bd"><span class="lab">Côté ANSSI</span>
+      <p>Ces principes irriguent le <b>Guide d'hygiène informatique</b> de l'ANSSI et ses recommandations de développement. L'idée directrice : la sécurité se construit par accumulation de bonnes pratiques simples et constantes, pas par une mesure miracle.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== A01 ===== -->
+  <section id="a01" class="fam-owasp">
+    <div class="modtag"><span class="code">A01</span>OWASP 2025 · n°1</div>
+    <h2>Contrôle d'accès défaillant</h2>
+    <p class="intent"><b>Le risque —</b> Un utilisateur accède à des données ou des actions qui ne devraient pas lui être permises. <b>N°1 du classement</b>, et désormais la <b>SSRF</b> y est rattachée.</p>
+
+    <p>La faute la plus courante : vérifier l'<i>authentification</i> (« qui es-tu ? ») mais oublier l'<i>autorisation</i> (« as-tu le droit pour CETTE ressource ? »). Un identifiant dans l'URL qu'on incrémente, et l'on lit la facture du voisin — c'est l'<span style="color:#161a20;font-weight:600">IDOR</span>.</p>
+
+    <div class="callout c-attack">
+      <div class="ic">😈</div>
+      <div class="bd"><span class="lab">Vu côté attaquant</span>
+      <p>« <code>/factures/1041</code> me renvoie ma facture. Et <code>/factures/1042</code> ? … Tiens, c'est celle de quelqu'un d'autre. Je boucle de 1 à 99999. »</p></div>
+    </div>
+
+    <div class="compare" data-compare>
+      <div class="ctabs"><button class="ctab bad active" data-tab="0">Vulnérable</button><button class="ctab good" data-tab="1">Corrigé</button></div>
+      <div class="cpanel active">
+        <div class="code" data-file-ts="factures.ts" data-file-py="factures.py">
+          <script type="text/plain" data-lang="ts">// Aucune vérification que la facture appartient au demandeur
+app.get("/api/factures/:id", async (req, res) => {
+  const facture = await db.factures.findById(req.params.id);
+  res.json(facture);            // n'importe qui lit n'importe quelle facture
+});</script>
+          <script type="text/plain" data-lang="py">@app.get("/api/factures/{facture_id}")
+def lire_facture(facture_id: str):
+    # Aucune vérification de propriété
+    return db.factures.find_by_id(facture_id)   # n'importe qui lit n'importe quoi</script>
+        </div>
+        <div class="cnote bad"><b>IDOR :</b> l'identité est connue, mais le droit d'accès à <i>cette</i> ressource n'est jamais contrôlé.</div>
+      </div>
+      <div class="cpanel">
+        <div class="code" data-file-ts="factures.ts" data-file-py="factures.py">
+          <script type="text/plain" data-lang="ts">// Autorisation côté serveur : on vérifie la propriété
+app.get("/api/factures/:id", requireAuth, async (req, res) => {
+  const facture = await db.factures.findById(req.params.id);
+  if (!facture || facture.ownerId !== req.user.id) {
+    return res.status(404).json({ error: "Introuvable" }); // 404 : on ne révèle pas l'existence
+  }
+  res.json(facture);
+});</script>
+          <script type="text/plain" data-lang="py">@app.get("/api/factures/{facture_id}")
+def lire_facture(facture_id: str, user=Depends(require_auth)):
+    facture = db.factures.find_by_id(facture_id)
+    if facture is None or facture.owner_id != user.id:
+        raise HTTPException(status_code=404, detail="Introuvable")  # 404 : on ne divulgue rien
+    return facture</script>
+        </div>
+        <div class="cnote good"><b>Contrôle de propriété</b> à chaque accès, refus par défaut, et <b>404</b> plutôt que 403 pour ne pas confirmer l'existence de la ressource.</div>
+      </div>
+    </div>
+
+    <h4>Défenses clés</h4>
+    <ul>
+      <li>Autorisation <b>côté serveur</b> sur chaque requête, par déni par défaut (deny-by-default).</li>
+      <li>Ne jamais se fier à un rôle, un prix ou un identifiant venant du client.</li>
+      <li>SSRF : valider et restreindre toute URL fournie par l'utilisateur (liste blanche de domaines, pas d'accès aux IP internes).</li>
+    </ul>
+  </section>
+
+  <!-- ===== A02 ===== -->
+  <section id="a02" class="fam-owasp">
+    <div class="modtag"><span class="code">A02</span>OWASP 2025 · n°2</div>
+    <h2>Mauvaise configuration</h2>
+    <p class="intent"><b>Le risque —</b> Le code est correct, mais la <b>configuration</b> est ouverte : mode debug en prod, identifiants par défaut, services inutiles, en-têtes manquants. <b>En forte hausse</b> (de la 5ᵉ à la 2ᵉ place).</p>
+
+    <p>À mesure que les applications dépendent de configuration (variables, conteneurs, cloud), la surface d'erreur explose. Les classiques : une console d'admin laissée ouverte, des messages d'erreur verbeux qui exposent la stack, un bucket de stockage « public », un compte <code>admin/admin</code> jamais changé.</p>
+
+    <div class="callout c-attack">
+      <div class="ic">😈</div>
+      <div class="bd"><span class="lab">Vu côté attaquant</span>
+      <p>« Je teste les chemins classiques : <code>/.env</code>, <code>/admin</code>, la page d'erreur détaillée, les identifiants par défaut de l'outil que vous utilisez. Souvent, l'un d'eux répond. »</p></div>
+    </div>
+
+    <h4>Défenses clés</h4>
+    <ul>
+      <li><b>Durcir par défaut</b> : debug désactivé en prod, fonctionnalités et comptes inutiles supprimés, secrets par défaut changés.</li>
+      <li><b>Erreurs génériques</b> côté client ; les détails restent dans les logs serveur (voir A10).</li>
+      <li><b>En-têtes de sécurité</b> HTTP : <code>Content-Security-Policy</code>, <code>Strict-Transport-Security</code>, <code>X-Content-Type-Options</code>, cookies <code>Secure; HttpOnly; SameSite</code>.</li>
+      <li>Configuration <b>identique et reproductible</b> entre environnements (infra-as-code), revue comme du code.</li>
+    </ul>
+  </section>
+
+  <!-- ===== A03 ===== -->
+  <section id="a03" class="fam-owasp">
+    <div class="modtag"><span class="code">A03</span>OWASP 2025</div>
+    <h2>Chaîne d'approvisionnement<span class="new-badge">Nouveau</span></h2>
+    <p class="intent"><b>Le risque —</b> La menace ne vient pas de votre code, mais de ce dont il dépend : <b>dépendances, systèmes de build, distribution</b>. <cite index="9-1">Cette catégorie étend l'ancienne « Composants vulnérables et obsolètes » de 2021 à tout l'écosystème logiciel</cite>.</p>
+
+    <p>Un seul paquet compromis — maintainer piraté, dépendance malveillante, build trafiqué — et le code hostile s'exécute avec votre confiance, souvent dès le poste du développeur, puis traverse CI, conteneurs et prod. <cite index="2-1">Une dépendance malveillante peut se propager à travers les systèmes CI, les conteneurs et les environnements cloud en quelques heures, souvent sans déclencher les scanners traditionnels</cite>.</p>
+
+    <div class="code-static" data-file="terminal" data-lang="bash"><script type="text/plain"># Verrouiller (reproductible) puis auditer les dépendances
+npm ci                              # installe EXACTEMENT le lockfile, sans résolution surprise
+npm audit --audit-level=high        # signale les vulnérabilités connues
+
+# Côté Python
+pip install -r requirements.txt     # versions épinglées
+pip-audit                           # CVE connues dans l'arbre de dépendances</script></div>
+
+    <h4>Défenses clés</h4>
+    <ul>
+      <li><b>Verrouiller</b> les versions (lockfile) et installer à l'identique (<code>npm ci</code>, hashes pip).</li>
+      <li>Scanner en continu (SCA) et tenir les dépendances <b>à jour</b> ; supprimer celles qu'on n'utilise pas.</li>
+      <li>Vérifier la <b>provenance</b> (intégrité, signatures, registres de confiance) et figer l'intégrité du build (CI/CD).</li>
+      <li>Se méfier des installations de scripts non vérifiés et des dépendances « fantômes ».</li>
+    </ul>
+  </section>
+
+  <!-- ===== A04 ===== -->
+  <section id="a04" class="fam-owasp">
+    <div class="modtag"><span class="code">A04</span>OWASP 2025</div>
+    <h2>Défaillances cryptographiques</h2>
+    <p class="intent"><b>Le risque —</b> Données sensibles mal (ou pas) protégées : transport en clair, mauvais algorithme, mots de passe stockés naïvement, clés en dur.</p>
+
+    <p>L'erreur emblématique : « hacher » les mots de passe avec un SHA rapide. Un hash rapide est exactement ce que veut l'attaquant pour les casser en masse. Il faut une fonction <b>lente et salée</b> dédiée aux mots de passe : <span style="color:#161a20;font-weight:600">Argon2id</span> (ou bcrypt/scrypt).</p>
+
+    <div class="compare" data-compare>
+      <div class="ctabs"><button class="ctab bad active" data-tab="0">Vulnérable</button><button class="ctab good" data-tab="1">Corrigé</button></div>
+      <div class="cpanel active">
+        <div class="code" data-file-ts="auth.ts" data-file-py="auth.py">
+          <script type="text/plain" data-lang="ts">import { createHash } from "node:crypto";
+// SHA-256 nu : très rapide à brute-forcer, sans sel — inadapté aux mots de passe
+const hash = createHash("sha256").update(motDePasse).digest("hex");
+await db.users.create({ email, hash });</script>
+          <script type="text/plain" data-lang="py">import hashlib
+# SHA-256 nu : très rapide, sans sel — inadapté aux mots de passe
+hash = hashlib.sha256(mot_de_passe.encode()).hexdigest()
+db.users.create(email=email, hash=hash)</script>
+        </div>
+        <div class="cnote bad"><b>Trop rapide :</b> un GPU teste des milliards de SHA-256 par seconde. Sans sel, les hash identiques se repèrent.</div>
+      </div>
+      <div class="cpanel">
+        <div class="code" data-file-ts="auth.ts" data-file-py="auth.py">
+          <script type="text/plain" data-lang="ts">import { hash as argon, verify } from "@node-rs/argon2";
+// Argon2id : lent, salé et paramétrable (bcrypt/scrypt aussi acceptables)
+const empreinte = await argon(motDePasse);      // sel généré automatiquement
+await db.users.create({ email, hash: empreinte });
+// connexion : await verify(user.hash, motDePasseFourni)</script>
+          <script type="text/plain" data-lang="py">from argon2 import PasswordHasher
+ph = PasswordHasher()
+# Argon2id : lent, salé et paramétrable (bcrypt/scrypt aussi acceptables)
+empreinte = ph.hash(mot_de_passe)               # sel généré automatiquement
+db.users.create(email=email, hash=empreinte)
+# connexion : ph.verify(user.hash, mot_de_passe_fourni)</script>
+        </div>
+        <div class="cnote good"><b>Lent par conception</b> et salé : le brute-force devient économiquement irréaliste, et chaque empreinte est unique.</div>
+      </div>
+    </div>
+
+    <div class="dos">
+      <p class="y"><b>À faire</b> — TLS partout ; algorithmes éprouvés et à jour ; clés gérées hors du code ; chiffrer les données sensibles au repos.</p>
+      <p class="n"><b>À éviter</b> — inventer sa crypto ; MD5/SHA1 ; ECB ; secrets dans le dépôt ; aléa non cryptographique pour des jetons.</p>
+    </div>
+
+    <div class="callout c-anssi">
+      <div class="ic">🛡️</div>
+      <div class="bd"><span class="lab">Côté ANSSI</span>
+      <p>Le <b>RGS</b> (Référentiel Général de Sécurité) et les guides cryptographiques de l'ANSSI fixent les algorithmes et tailles de clés recommandés. La règle d'or reste : <b>n'implémentez jamais votre propre cryptographie</b>, utilisez des bibliothèques éprouvées.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== A05 ===== -->
+  <section id="a05" class="fam-owasp">
+    <div class="modtag"><span class="code">A05</span>OWASP 2025</div>
+    <h2>Injection</h2>
+    <p class="intent"><b>Le risque —</b> Une entrée non fiable est interprétée comme du <b>code ou une commande</b> : SQL, NoSQL, OS, LDAP… et le XSS (injection dans le navigateur). La cause unique : mélanger <i>données</i> et <i>instructions</i>.</p>
+
+    <div class="callout c-attack">
+      <div class="ic">😈</div>
+      <div class="bd"><span class="lab">Vu côté attaquant</span>
+      <p>« Dans le champ email, j'écris <code>x' OR '1'='1</code>. Si votre requête est construite par concaténation, je viens de transformer votre <code>WHERE</code> en « toujours vrai ». »</p></div>
+    </div>
+
+    <div class="compare" data-compare>
+      <div class="ctabs"><button class="ctab bad active" data-tab="0">Vulnérable</button><button class="ctab good" data-tab="1">Corrigé</button></div>
+      <div class="cpanel active">
+        <div class="code" data-file-ts="users.ts" data-file-py="users.py">
+          <script type="text/plain" data-lang="ts">// Injection SQL : l'entrée est concaténée dans la requête
+const q = `SELECT * FROM users WHERE email = '${email}'`;
+const rows = await db.query(q);     // email = "x' OR '1'='1" → fuite totale</script>
+          <script type="text/plain" data-lang="py"># Injection SQL : l'entrée est interpolée dans la requête
+q = f"SELECT * FROM users WHERE email = '{email}'"
+rows = cursor.execute(q)            # email = "x' OR '1'='1" → fuite totale</script>
+        </div>
+        <div class="cnote bad"><b>Données = code :</b> l'entrée modifie la structure de la requête. Le filtrage « maison » de caractères ne suffit jamais.</div>
+      </div>
+      <div class="cpanel">
+        <div class="code" data-file-ts="users.ts" data-file-py="users.py">
+          <script type="text/plain" data-lang="ts">// Requête paramétrée : l'entrée n'est JAMAIS interprétée comme du SQL
+const rows = await db.query(
+  "SELECT * FROM users WHERE email = $1",
+  [email],
+);</script>
+          <script type="text/plain" data-lang="py"># Requête paramétrée : le pilote sépare la valeur de la requête
+rows = cursor.execute(
+    "SELECT * FROM users WHERE email = %s",
+    (email,),
+)</script>
+        </div>
+        <div class="cnote good"><b>Requêtes paramétrées :</b> la base reçoit la structure et les valeurs séparément. L'injection devient impossible.</div>
+      </div>
+    </div>
+
+    <h4>Défenses clés</h4>
+    <ul>
+      <li><b>Toujours</b> des requêtes paramétrées / ORM ; jamais de concaténation d'entrées dans une requête ou une commande.</li>
+      <li><b>XSS</b> : encoder les sorties selon le contexte (le framework le fait — évitez <code>dangerouslySetInnerHTML</code>, <code>|safe</code>, <code>eval</code>) et posez une <code>Content-Security-Policy</code>.</li>
+      <li>Valider les entrées en complément (voir « Entrées &amp; sorties »), jamais comme unique défense.</li>
+    </ul>
+  </section>
+
+  <!-- ===== A06 ===== -->
+  <section id="a06" class="fam-owasp">
+    <div class="modtag"><span class="code">A06</span>OWASP 2025</div>
+    <h2>Conception non sécurisée</h2>
+    <p class="intent"><b>Le risque —</b> La faille n'est pas un bug d'implémentation, mais un <b>défaut de conception</b> : on a oublié un cas d'abus, une limite, un contrôle métier. Aucune ligne de code « propre » ne rattrape un design qui n'a pas pensé l'attaque.</p>
+
+    <p>Exemple : un tunnel de réinitialisation de mot de passe qui envoie un code à 4 chiffres sans limite d'essais — le code est correct, le <i>design</i> est cassé. La parade se joue en amont : <b>modélisation des menaces</b> (« qu'est-ce qui peut mal tourner ? ») et <b>cas d'abus</b> à côté des cas d'usage.</p>
+
+    <h4>Défenses clés</h4>
+    <ul>
+      <li><b>Threat modeling</b> dès la conception (STRIDE, arbres d'attaque) sur les flux sensibles.</li>
+      <li>Écrire les <b>cas d'abus</b> en regard des user stories ; définir les limites (débit, quotas, montants).</li>
+      <li>Réutiliser des <b>patterns sûrs</b> et des bibliothèques éprouvées plutôt que réinventer.</li>
+      <li>Revue de sécurité de la conception avant de coder les fonctionnalités à risque.</li>
+    </ul>
+
+    <div class="callout c-key">
+      <div class="ic">🎯</div>
+      <div class="bd"><span class="lab">À retenir</span>
+      <p>« Shift left » prend ici tout son sens : <b>une faille de conception détectée sur un tableau blanc coûte mille fois moins cher</b> qu'en production. La sécurité commence avant le premier commit.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== A07 ===== -->
+  <section id="a07" class="fam-owasp">
+    <div class="modtag"><span class="code">A07</span>OWASP 2025</div>
+    <h2>Défaillances d'authentification</h2>
+    <p class="intent"><b>Le risque —</b> Prouver l'identité est mal fait : mots de passe faibles tolérés, pas de limite d'essais, sessions mal gérées, énumération de comptes. <cite index="9-1">Renommée en 2025 (auparavant « Identification and Authentication Failures »)</cite>.</p>
+
+    <p>Quelques détails font toute la différence : limiter le débit sur <code>/login</code>, comparer les jetons en <b>temps constant</b> (sinon une attaque temporelle les devine), et renvoyer le <b>même message</b> pour « email inconnu » et « mauvais mot de passe » (sinon on énumère vos comptes).</p>
+
+    <div class="code" data-file-ts="auth-tokens.ts" data-file-py="auth_tokens.py">
+      <script type="text/plain" data-lang="ts">import { timingSafeEqual } from "node:crypto";
+// Comparaison à temps constant (anti-attaque temporelle) pour jetons et secrets
+function jetonsEgaux(a: string, b: string): boolean {
+  const ba = Buffer.from(a), bb = Buffer.from(b);
+  return ba.length === bb.length && timingSafeEqual(ba, bb);
+}
+// + limitation du débit sur /login
+// + message identique pour « email inconnu » et « mauvais mot de passe » (anti-énumération)</script>
+      <script type="text/plain" data-lang="py">import hmac
+# Comparaison à temps constant (anti-attaque temporelle) pour jetons et secrets
+def jetons_egaux(a: str, b: str) -> bool:
+    return hmac.compare_digest(a.encode(), b.encode())
+# + limitation du débit sur /login
+# + message identique pour « email inconnu » et « mauvais mot de passe » (anti-énumération)</script>
+    </div>
+
+    <h4>Défenses clés</h4>
+    <ul>
+      <li>Déléguer à des frameworks d'authentification éprouvés ; activer le <b>MFA</b>.</li>
+      <li>Politiques de mots de passe modernes (longueur &gt; complexité), blocage des mots de passe compromis connus.</li>
+      <li>Sessions : jetons aléatoires forts, expiration, invalidation à la déconnexion, cookies <code>Secure; HttpOnly; SameSite</code>.</li>
+      <li>Limitation du débit et temporisation progressive contre le bourrage d'identifiants.</li>
+    </ul>
+  </section>
+
+  <!-- ===== A08 ===== -->
+  <section id="a08" class="fam-owasp">
+    <div class="modtag"><span class="code">A08</span>OWASP 2025</div>
+    <h2>Défauts d'intégrité</h2>
+    <p class="intent"><b>Le risque —</b> Du code ou des données sont acceptés <b>sans vérifier leur intégrité</b> : désérialisation dangereuse, mise à jour non signée, artefact de build trafiqué, pipeline CI/CD non protégé.</p>
+
+    <p>Là où A03 regarde tout l'écosystème, A08 se concentre sur les <b>frontières de confiance</b> internes : croit-on aveuglément un objet sérialisé reçu, un plugin chargé dynamiquement, un artefact poussé par la CI ? Désérialiser des données non fiables est un grand classique d'exécution de code à distance.</p>
+
+    <h4>Défenses clés</h4>
+    <ul>
+      <li>Ne jamais désérialiser de données non fiables ; préférer des formats de données « sans code » (JSON validé) aux formats qui instancient des objets.</li>
+      <li><b>Signer et vérifier</b> les mises à jour, artefacts et configurations critiques.</li>
+      <li>Protéger le pipeline CI/CD : accès restreint, étapes vérifiées, dépendances de build figées.</li>
+    </ul>
+  </section>
+
+  <!-- ===== A09 ===== -->
+  <section id="a09" class="fam-owasp">
+    <div class="modtag"><span class="code">A09</span>OWASP 2025</div>
+    <h2>Journalisation &amp; alerte</h2>
+    <p class="intent"><b>Le risque —</b> Sans journaux ni alertes, une attaque passe inaperçue pendant des mois. <cite index="9-1">Renommée en 2025 pour souligner l'importance de l'alerte, et plus seulement de la surveillance</cite>.</p>
+
+    <p>Le but n'est pas de tout logger, mais de logger ce qui permet de <b>détecter et investiguer</b> : connexions (réussies et échouées), changements de droits, accès sensibles, erreurs de sécurité. Et surtout, de <b>déclencher une alerte</b> sur les signaux qui comptent.</p>
+
+    <div class="callout c-warn">
+      <div class="ic">⚠️</div>
+      <div class="bd"><span class="lab">Le piège du journal</span>
+      <p>Ne journalisez <b>jamais</b> de mots de passe, jetons, numéros de carte ou données personnelles en clair. Un log trop bavard devient lui-même une fuite de données — et une cible.</p></div>
+    </div>
+
+    <h4>Défenses clés</h4>
+    <ul>
+      <li>Journaliser les <b>événements de sécurité</b> avec contexte (qui, quoi, quand, d'où) — sans secrets ni PII.</li>
+      <li>Centraliser, horodater, protéger les logs en intégrité (un attaquant cherche à les effacer).</li>
+      <li>Définir des <b>alertes</b> et un plan de réponse : un log que personne ne regarde ne sert à rien.</li>
+    </ul>
+  </section>
+
+  <!-- ===== A10 ===== -->
+  <section id="a10" class="fam-owasp">
+    <div class="modtag"><span class="code">A10</span>OWASP 2025</div>
+    <h2>Conditions exceptionnelles<span class="new-badge">Nouveau</span></h2>
+    <p class="intent"><b>Le risque —</b> La façon dont le système réagit à l'<b>anormal</b> : erreurs mal gérées, logique qui « échoue ouvert » (fail-open), exceptions qui fuient des détails. <cite index="2-1">Catégorie entièrement nouvelle en 2025, centrée sur la gestion sécurisée des erreurs et la résilience</cite>.</p>
+
+    <p>Le pire scénario : un contrôle de sécurité qui, en cas d'exception, <b>laisse passer</b>. Et son cousin : la page d'erreur qui affiche la stack trace, le chemin du serveur, voire une requête SQL. La règle : <b>échouer fermé</b>, et ne révéler aucun détail à l'extérieur.</p>
+
+    <div class="compare" data-compare>
+      <div class="ctabs"><button class="ctab bad active" data-tab="0">Vulnérable</button><button class="ctab good" data-tab="1">Corrigé</button></div>
+      <div class="cpanel active">
+        <div class="code" data-file-ts="admin.ts" data-file-py="admin.py">
+          <script type="text/plain" data-lang="ts">app.get("/admin", async (req, res) => {
+  try {
+    if (await verifierDroitsAdmin(req.user)) return res.send(pageAdmin());
+  } catch (e) {
+    return res.send(pageAdmin());     // fail-open : l'erreur DONNE l'accès !
+  }
+  res.status(500).send(e.stack);      // fuite de la stack trace
+});</script>
+          <script type="text/plain" data-lang="py">@app.get("/admin")
+def admin(user=Depends(current_user)):
+    try:
+        if verifier_droits_admin(user):
+            return page_admin()
+    except Exception as e:
+        return page_admin()           # fail-open : l'erreur DONNE l'accès !
+    raise HTTPException(500, detail=str(e))   # fuite de l'exception</script>
+        </div>
+        <div class="cnote bad"><b>Échec ouvert + fuite :</b> l'exception contourne le contrôle, et le détail technique part chez le client.</div>
+      </div>
+      <div class="cpanel">
+        <div class="code" data-file-ts="admin.ts" data-file-py="admin.py">
+          <script type="text/plain" data-lang="ts">app.get("/admin", async (req, res) => {
+  try {
+    if (await verifierDroitsAdmin(req.user)) return res.send(pageAdmin());
+    return res.status(403).send("Accès refusé");
+  } catch (e) {
+    logger.error("verif droits admin", { err: e, userId: req.user.id });
+    return res.status(500).send("Une erreur est survenue.");  // aucun détail exposé
+  }
+});</script>
+          <script type="text/plain" data-lang="py">@app.get("/admin")
+def admin(user=Depends(current_user)):
+    try:
+        if verifier_droits_admin(user):
+            return page_admin()
+        raise HTTPException(403, detail="Accès refusé")
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("verif droits admin user=%s", user.id)
+        raise HTTPException(500, detail="Une erreur est survenue.")  # détail en logs only</script>
+        </div>
+        <div class="cnote good"><b>Échec fermé :</b> en cas de doute, on refuse. Message générique côté client, détails complets dans les logs.</div>
+      </div>
+    </div>
+
+    <h4>Défenses clés</h4>
+    <ul>
+      <li>Concevoir les contrôles pour <b>échouer fermé</b> (deny par défaut sur exception).</li>
+      <li>Messages d'erreur <b>génériques</b> à l'extérieur ; pile et contexte uniquement dans les logs serveur.</li>
+      <li>Gérer explicitement les cas limites (timeouts, valeurs nulles, dépassements) plutôt que de les laisser remonter.</li>
+    </ul>
+  </section>
+
+  <!-- ===== ENTREES ===== -->
+  <section id="entrees" class="fam-prac">
+    <div class="modtag"><span class="code">›</span>En pratique</div>
+    <h2>Entrées &amp; sorties</h2>
+    <p class="intent"><b>La règle —</b> <b>Valider en entrée, encoder en sortie.</b> Deux gestes qui, à eux seuls, désamorcent une grande part de l'OWASP Top 10.</p>
+
+    <figure>
+      <div class="fig">
+        <svg viewBox="0 0 600 190" role="img" aria-label="Frontière de confiance et validation">
+          <defs><marker id="av" markerWidth="9" markerHeight="9" refX="6.5" refY="4" orient="auto"><path d="M0 1 L6.5 4 L0 7" fill="none" stroke="#4a515c" stroke-width="1.4"/></marker></defs>
+          <text x="92" y="28" text-anchor="middle" class="d-title" fill="#d22d26">Zone non fiable</text>
+          <g class="d-lbl-sm">
+            <rect x="20" y="44" width="120" height="26" rx="7" fill="rgba(210,45,38,.06)" stroke="#d22d26"/><text x="80" y="61" text-anchor="middle" fill="#d22d26">requête HTTP</text>
+            <rect x="20" y="80" width="120" height="26" rx="7" fill="rgba(210,45,38,.06)" stroke="#d22d26"/><text x="80" y="97" text-anchor="middle" fill="#d22d26">fichier importé</text>
+            <rect x="20" y="116" width="120" height="26" rx="7" fill="rgba(210,45,38,.06)" stroke="#d22d26"/><text x="80" y="133" text-anchor="middle" fill="#d22d26">API tierce</text>
+          </g>
+          <line x1="300" y1="20" x2="300" y2="170" stroke="#d3d8e0" stroke-dasharray="5 5"/>
+          <rect x="248" y="68" width="104" height="54" rx="10" fill="rgba(184,115,10,.08)" stroke="#b8730a" stroke-width="1.4"/>
+          <text x="300" y="90" text-anchor="middle" class="d-lbl" fill="#b8730a">Validation</text>
+          <text x="300" y="106" text-anchor="middle" class="d-lbl-sm" fill="#b8730a">liste blanche</text>
+          <text x="468" y="28" text-anchor="middle" class="d-title" fill="#147544">Zone de confiance</text>
+          <rect x="420" y="74" width="150" height="42" rx="10" fill="rgba(31,157,87,.08)" stroke="#1f9d57" stroke-width="1.4"/>
+          <text x="495" y="99" text-anchor="middle" class="d-lbl" fill="#147544">logique métier · BDD</text>
+          <g stroke="#4a515c" stroke-width="1.4" fill="none" marker-end="url(#av)">
+            <path d="M140 57 q70 10 104 24"/><path d="M140 93 L246 95"/><path d="M140 129 q70 -10 104 -24"/>
+            <path d="M352 95 L418 95"/>
+          </g>
+        </svg>
+      </div>
+      <figcaption>Tout franchit une <b>frontière de confiance</b> via une validation par liste blanche avant d'atteindre la logique métier.</figcaption>
+    </figure>
+
+    <p>Valider par <b>liste blanche</b> (ce qui est autorisé), pas par liste noire (ce qu'on interdit) : on décrit la forme attendue — type, format, bornes, valeurs permises — et on rejette tout le reste. Une bibliothèque de schémas le rend déclaratif :</p>
+
+    <div class="code" data-file-ts="inscription.ts" data-file-py="inscription.py">
+      <script type="text/plain" data-lang="ts">import { z } from "zod";
+// Liste blanche : forme, type, bornes, valeurs permises — on rejette le reste
+const Inscription = z.object({
+  email: z.string().email().max(254),
+  age:   z.number().int().min(13).max(120),
+  role:  z.enum(["lecteur", "auteur"]),     // jamais "admin" depuis le client
+});
+const data = Inscription.parse(req.body);   // lève une erreur si non conforme</script>
+      <script type="text/plain" data-lang="py">from pydantic import BaseModel, EmailStr, conint
+from typing import Literal
+# Liste blanche : forme, type, bornes, valeurs permises — on rejette le reste
+class Inscription(BaseModel):
+    email: EmailStr
+    age:   conint(ge=13, le=120)
+    role:  Literal["lecteur", "auteur"]      # jamais "admin" depuis le client
+
+data = Inscription.model_validate(req_json)  # lève une erreur si non conforme</script>
+    </div>
+
+    <div class="callout c-key">
+      <div class="ic">🎯</div>
+      <div class="bd"><span class="lab">Les deux temps</span>
+      <p><b>Validation</b> = filtrer ce qui entre (côté serveur, toujours). <b>Encodage de sortie</b> = neutraliser ce qui sort, selon le contexte de destination (HTML, SQL, shell, URL). L'un protège l'intérieur, l'autre empêche vos données de devenir du code ailleurs.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== SECRETS ===== -->
+  <section id="secrets" class="fam-prac">
+    <div class="modtag"><span class="code">›</span>En pratique</div>
+    <h2>Secrets &amp; configuration</h2>
+    <p class="intent"><b>La règle —</b> Aucun secret dans le code. Jamais. Un secret committé est un secret <b>compromis</b> — il reste dans l'historique git même après suppression.</p>
+
+    <div class="compare" data-compare>
+      <div class="ctabs"><button class="ctab bad active" data-tab="0">Vulnérable</button><button class="ctab good" data-tab="1">Corrigé</button></div>
+      <div class="cpanel active">
+        <div class="code" data-file-ts="paiement.ts" data-file-py="paiement.py">
+          <script type="text/plain" data-lang="ts">// Secret en dur : committé, partagé, gravé dans l'historique git pour toujours
+const stripe = new Stripe("sk_live_51H8x...CLE_REELLE...");</script>
+          <script type="text/plain" data-lang="py"># Secret en dur : committé, gravé dans l'historique git pour toujours
+stripe.api_key = "sk_live_51H8x...CLE_REELLE..."</script>
+        </div>
+        <div class="cnote bad"><b>Fuite garantie :</b> dépôt cloné, capture d'écran, historique… la clé circule et ne peut plus être « décommittée ».</div>
+      </div>
+      <div class="cpanel">
+        <div class="code" data-file-ts="paiement.ts" data-file-py="paiement.py">
+          <script type="text/plain" data-lang="ts">// Secret injecté par l'environnement / un coffre-fort, jamais dans le dépôt
+const cle = process.env.STRIPE_SECRET_KEY;
+if (!cle) throw new Error("STRIPE_SECRET_KEY manquante");
+const stripe = new Stripe(cle);</script>
+          <script type="text/plain" data-lang="py">import os
+# Secret depuis l'environnement / un coffre-fort, jamais dans le dépôt
+cle = os.environ.get("STRIPE_SECRET_KEY")
+if not cle:
+    raise RuntimeError("STRIPE_SECRET_KEY manquante")
+stripe.api_key = cle</script>
+        </div>
+        <div class="cnote good"><b>Hors du code :</b> variables d'environnement ou coffre (Vault, secrets manager), avec une erreur claire si le secret manque.</div>
+      </div>
+    </div>
+
+    <h4>Défenses clés</h4>
+    <ul>
+      <li>Secrets via environnement ou coffre-fort ; <code>.env</code> dans le <code>.gitignore</code>, jamais committé.</li>
+      <li><b>Scanner les secrets</b> en CI et au commit (détection de clés) ; révoquer immédiatement tout secret exposé.</li>
+      <li><b>Rotation</b> régulière et droits minimaux par clé (une clé = un usage).</li>
+    </ul>
+  </section>
+
+  <!-- ===== SDLC ===== -->
+  <section id="sdlc" class="fam-prac">
+    <div class="modtag"><span class="code">›</span>En pratique</div>
+    <h2>Le cycle de dev sécurisé</h2>
+    <p class="lead">La sécurité n'est pas une étape, c'est un fil tendu sur tout le cycle de vie. Voici où elle s'accroche.</p>
+
+    <div class="steps">
+      <div class="step"><div><h5>Concevoir — modéliser les menaces</h5><p>Cartographier les flux sensibles, lister cas d'abus et limites avant d'écrire le code (A06).</p></div></div>
+      <div class="step"><div><h5>Coder — règles &amp; revues</h5><p>Conventions de codage sécurisé, revue de code orientée sécurité, validation/encodage systématiques.</p></div></div>
+      <div class="step"><div><h5>Outiller — SAST · SCA · secrets</h5><p>Analyse statique du code, scan des dépendances (A03) et détection de secrets, intégrés en CI.</p></div></div>
+      <div class="step"><div><h5>Tester — DAST &amp; cas d'attaque</h5><p>Tests dynamiques sur l'appli en marche, tests de sécurité ciblés, fuzzing des entrées.</p></div></div>
+      <div class="step"><div><h5>Livrer — pipeline verrouillé</h5><p>Build reproductible et signé, configuration durcie, secrets injectés, portes de sécurité bloquantes.</p></div></div>
+      <div class="step"><div><h5>Exploiter — observer &amp; réagir</h5><p>Journalisation, alertes (A09), gestion des vulnérabilités et plan de réponse aux incidents.</p></div></div>
+    </div>
+
+    <div class="callout c-tip">
+      <div class="ic">💡</div>
+      <div class="bd"><span class="lab">Automatiser le filet</span>
+      <p>SAST, SCA et scan de secrets en <b>portes de CI bloquantes</b> transforment la sécurité en garde-fou permanent plutôt qu'en revue ponctuelle. Le coût d'une faille croît de façon exponentielle à mesure qu'elle avance dans le cycle.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== ANSSI ===== -->
+  <section id="anssi" class="fam-prac">
+    <div class="modtag"><span class="code">›</span>En pratique</div>
+    <h2>Le réflexe ANSSI</h2>
+    <p class="intent"><b>L'esprit —</b> L'ANSSI (agence française de cybersécurité) ne raisonne pas « faille par faille » mais <b>posture globale</b> : une hygiène constante qui rend l'attaque coûteuse à chaque étape.</p>
+
+    <p>Au-delà des principes vus en §01, quelques repères concrets côté ANSSI : le <b>Guide d'hygiène informatique</b> (les mesures de base à ne jamais négliger), le <b>RGS</b> pour les choix cryptographiques, et des recommandations sectorielles (développement, journalisation, administration sécurisée).</p>
+
+    <div class="dos">
+      <p class="y"><b>Réflexes ANSSI</b> — défense en profondeur · moindre privilège · cloisonnement · mises à jour · sauvegardes testées · cartographie du SI · journalisation centralisée.</p>
+      <p class="n"><b>Anti-réflexes</b> — un seul rempart · comptes tout-puissants · systèmes non maintenus · « ça n'arrivera pas chez nous ».</p>
+    </div>
+
+    <div class="callout c-anssi">
+      <div class="ic">🛡️</div>
+      <div class="bd"><span class="lab">À retenir</span>
+      <p>OWASP vous dit <i>quelles failles</i> guetter dans l'application ; l'ANSSI vous dit <i>comment tenir</i> une organisation et un SI dans la durée. Les deux se complètent : le code sécurisé vit dans un système sécurisé.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== CHECKLIST ===== -->
+  <section id="checklist" class="fam-end">
+    <div class="modtag"><span class="code">✓</span>Pour finir</div>
+    <h2>Checklist du dev sécurisé</h2>
+    <p class="lead">À passer en revue avant de livrer une fonctionnalité sensible.</p>
+    <div class="checklist">
+      <div class="ck"><span class="box"></span><span>Toute entrée externe est <b>validée par liste blanche</b>, côté serveur.</span></div>
+      <div class="ck"><span class="box"></span><span>Chaque accès vérifie l'<b>autorisation</b> (pas seulement l'authentification), en deny-by-default.</span></div>
+      <div class="ck"><span class="box"></span><span>Aucune requête/commande n'est construite par <b>concaténation</b> d'entrées (requêtes paramétrées).</span></div>
+      <div class="ck"><span class="box"></span><span>Sorties <b>encodées</b> selon le contexte ; <code>Content-Security-Policy</code> en place.</span></div>
+      <div class="ck"><span class="box"></span><span>Mots de passe via <b>Argon2/bcrypt</b> ; TLS partout ; pas de crypto maison.</span></div>
+      <div class="ck"><span class="box"></span><span><b>Aucun secret</b> dans le code ; détection de secrets en CI.</span></div>
+      <div class="ck"><span class="box"></span><span>Dépendances <b>verrouillées et auditées</b> (SCA) ; configuration durcie, debug off en prod.</span></div>
+      <div class="ck"><span class="box"></span><span>Les contrôles <b>échouent fermés</b> ; erreurs génériques dehors, détails dans les logs.</span></div>
+      <div class="ck"><span class="box"></span><span>Événements de sécurité <b>journalisés</b> (sans secrets ni PII) et <b>alertés</b>.</span></div>
+      <div class="ck"><span class="box"></span><span>Les flux sensibles ont été passés au <b>threat modeling</b>.</span></div>
+    </div>
+  </section>
+
+  <!-- ===== ANTISECHE ===== -->
+  <section id="antiseche" class="fam-end">
+    <div class="modtag"><span class="code">≡</span>Pour finir</div>
+    <h2>Antisèche &amp; lectures</h2>
+    <p class="lead">L'OWASP Top 10:2025 en un coup d'œil, le vocabulaire, et par où continuer.</p>
+
+    <div class="sheet">
+      <table><tbody>
+        <tr><td>A01</td><td class="nw">Contrôle d'accès défaillant — autorisation manquante, IDOR ; <b>inclut désormais la SSRF</b>.</td></tr>
+        <tr><td>A02</td><td class="nw">Mauvaise configuration — debug, défauts, en-têtes, services inutiles. <b>↑ n°2</b>.</td></tr>
+        <tr><td>A03</td><td class="nw">Chaîne d'approvisionnement <span class="new-badge">Nouveau</span> — dépendances, build, distribution.</td></tr>
+        <tr><td>A04</td><td class="nw">Défaillances cryptographiques — données mal protégées, mauvais hash, clés exposées.</td></tr>
+        <tr><td>A05</td><td class="nw">Injection — SQL/NoSQL/OS/LDAP et XSS ; données interprétées comme du code.</td></tr>
+        <tr><td>A06</td><td class="nw">Conception non sécurisée — défaut de design, cas d'abus oubliés.</td></tr>
+        <tr><td>A07</td><td class="nw">Défaillances d'authentification — sessions, débit, énumération, MFA.</td></tr>
+        <tr><td>A08</td><td class="nw">Défauts d'intégrité — désérialisation, mises à jour non signées, CI/CD.</td></tr>
+        <tr><td>A09</td><td class="nw">Journalisation &amp; alerte — détecter, investiguer, réagir.</td></tr>
+        <tr><td>A10</td><td class="nw">Conditions exceptionnelles <span class="new-badge">Nouveau</span> — fail-closed, erreurs sûres.</td></tr>
+      </tbody></table>
+    </div>
+
+    <h3>Vocabulaire</h3>
+    <div class="sheet">
+      <table><tbody>
+        <tr><td>IDOR</td><td>Accès à un objet d'autrui via un identifiant manipulé (défaut d'autorisation).</td></tr>
+        <tr><td>SSRF</td><td>Forcer le serveur à émettre une requête vers une cible interne choisie par l'attaquant.</td></tr>
+        <tr><td>XSS</td><td>Injection de script exécuté dans le navigateur d'autres utilisateurs.</td></tr>
+        <tr><td>Fail-closed</td><td>En cas d'erreur/doute, refuser l'accès plutôt que l'accorder.</td></tr>
+        <tr><td>Liste blanche</td><td>N'autoriser que l'explicitement permis ; tout le reste est rejeté.</td></tr>
+        <tr><td>SAST / DAST / SCA</td><td>Analyse du code / de l'appli en marche / des dépendances.</td></tr>
+        <tr><td>Threat modeling</td><td>Anticiper, dès la conception, ce qui peut être attaqué et comment.</td></tr>
+        <tr><td>Défense en profondeur</td><td>Empiler les protections pour ne jamais dépendre d'une seule.</td></tr>
+      </tbody></table>
+    </div>
+
+    <h3>Pour aller plus loin</h3>
+    <ul>
+      <li><b>OWASP Top 10:2025</b> — la liste officielle, par catégorie, avec mappings CWE (owasp.org/Top10/2025).</li>
+      <li><b>OWASP ASVS</b> &amp; <b>Cheat Sheet Series</b> — exigences vérifiables et fiches pratiques par sujet.</li>
+      <li><b>ANSSI</b> — Guide d'hygiène informatique, RGS, recommandations de développement (cyber.gouv.fr).</li>
+      <li><b>MITRE CWE</b> — le référentiel des types de faiblesses logicielles.</li>
+    </ul>
+
+    <div class="callout c-key">
+      <div class="ic">🛡️</div>
+      <div class="bd"><span class="lab">Le mot de la fin</span>
+      <p>La sécurité parfaite n'existe pas — l'objectif est de <b>rendre l'attaque plus coûteuse que ce qu'elle rapporte</b>. Validez, autorisez, chiffrez, échouez fermé, journalisez, et tenez vos dépendances. Le reste, c'est de la constance. 🛡️</p></div>
+    </div>
+  </section>
+
+  </main>
+</div>
+
+<button id="navbtn" aria-label="Ouvrir le sommaire">
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5 L16 12 L9 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<div class="overlay" id="overlay"></div>
+
+<footer>
+  <p><b>Formation Développement sécurisé</b> — principes (défense en profondeur, moindre privilège, secure by design), OWASP Top 10:2025 vulnérabilité par vulnérabilité avec code avant/après, et réflexes ANSSI. Exemples en TypeScript ou Python via le sélecteur.</p>
+  <p style="margin-top:8px;color:#838b97">Rendre l'attaque plus coûteuse que ce qu'elle rapporte. 🛡️</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script>
+(function(){
+  function copyText(text, btn){
+    var old = btn.textContent;
+    var done = function(){ btn.textContent = "Copié ✓"; setTimeout(function(){ btn.textContent = old; }, 1300); };
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else { fallback(); }
+    function fallback(){
+      var ta = document.createElement("textarea"); ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); done(); }catch(e){} document.body.removeChild(ta);
+    }
+  }
+  function hl(el){ if (window.hljs){ try{ hljs.highlightElement(el); }catch(e){} } }
+  function clean(s){ return s.replace(/^\n/,"").replace(/\s+$/,""); }
+
+  // ----- switchable code blocks (TS / Python) -----
+  document.querySelectorAll(".code").forEach(function(block){
+    var sTs = block.querySelector('script[data-lang="ts"]');
+    var sPy = block.querySelector('script[data-lang="py"]');
+    if (!sTs || !sPy) return;
+    var codeTs = clean(sTs.textContent), codePy = clean(sPy.textContent);
+    var fTs = block.getAttribute("data-file-ts") || "exemple.ts";
+    var fPy = block.getAttribute("data-file-py") || "exemple.py";
+    var wrap = document.createElement("div"); wrap.className = "code-wrap";
+    var bar = document.createElement("div"); bar.className = "code-bar";
+    bar.innerHTML = '<span class="tag"></span>'
+      + '<span class="fname only-ts">'+fTs+'</span><span class="fname only-py">'+fPy+'</span>';
+    var btn = document.createElement("button"); btn.className = "copy"; btn.textContent = "Copier";
+    btn.addEventListener("click", function(){
+      var lang = document.body.getAttribute("data-lang") || "ts";
+      copyText(lang === "py" ? codePy : codeTs, btn);
+    });
+    bar.appendChild(btn);
+    var preTs = document.createElement("pre"); preTs.className = "only-ts";
+    var cTs = document.createElement("code"); cTs.className = "language-typescript"; cTs.textContent = codeTs; preTs.appendChild(cTs);
+    var prePy = document.createElement("pre"); prePy.className = "only-py";
+    var cPy = document.createElement("code"); cPy.className = "language-python"; cPy.textContent = codePy; prePy.appendChild(cPy);
+    wrap.appendChild(bar); wrap.appendChild(preTs); wrap.appendChild(prePy);
+    block.replaceWith(wrap);
+    hl(cTs); hl(cPy);
+  });
+
+  // ----- static code blocks -----
+  document.querySelectorAll(".code-static").forEach(function(block){
+    var raw = block.querySelector('script[type="text/plain"]'); if (!raw) return;
+    var code = clean(raw.textContent);
+    var file = block.getAttribute("data-file") || "";
+    var lang = block.getAttribute("data-lang") || "plaintext";
+    var wrap = document.createElement("div"); wrap.className = "code-wrap";
+    var bar = document.createElement("div"); bar.className = "code-bar";
+    bar.innerHTML = '<span class="tag"></span><span class="fname">'+file+'</span>';
+    var btn = document.createElement("button"); btn.className = "copy"; btn.textContent = "Copier";
+    btn.addEventListener("click", function(){ copyText(code, btn); });
+    bar.appendChild(btn);
+    var pre = document.createElement("pre");
+    var c = document.createElement("code"); c.className = "language-"+lang; c.textContent = code; pre.appendChild(c);
+    wrap.appendChild(bar); wrap.appendChild(pre);
+    block.replaceWith(wrap); hl(c);
+  });
+
+  // ----- language toggle -----
+  function setLang(l){ document.body.setAttribute("data-lang", l); }
+  document.querySelectorAll(".lb").forEach(function(b){
+    b.addEventListener("click", function(){ setLang(b.getAttribute("data-set")); });
+  });
+
+  // ----- compare tabs -----
+  document.querySelectorAll("[data-compare]").forEach(function(cmp){
+    var tabs = cmp.querySelectorAll(".ctab");
+    var panels = cmp.querySelectorAll(".cpanel");
+    tabs.forEach(function(tab){
+      tab.addEventListener("click", function(){
+        var i = +tab.getAttribute("data-tab");
+        tabs.forEach(function(t){ t.classList.remove("active"); });
+        panels.forEach(function(p){ p.classList.remove("active"); });
+        tab.classList.add("active");
+        if (panels[i]) panels[i].classList.add("active");
+      });
+    });
+  });
+
+  // ----- progress bar -----
+  var prog = document.getElementById("top-progress");
+  function onScroll(){
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    prog.style.width = (max > 0 ? (h.scrollTop || document.body.scrollTop) / max * 100 : 0) + "%";
+  }
+  window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
+
+  // ----- scroll-spy -----
+  var links = Array.prototype.slice.call(document.querySelectorAll("#toc a"));
+  var map = {}; links.forEach(function(a){ map[a.getAttribute("href").slice(1)] = a; });
+  var sections = links.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); }).filter(Boolean);
+  var spy = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (en.isIntersecting){
+        links.forEach(function(l){ l.classList.remove("active"); });
+        var a = map[en.target.id]; if (a) a.classList.add("active");
+      }
+    });
+  }, { rootMargin: "-16% 0px -76% 0px", threshold: 0 });
+  sections.forEach(function(s){ spy.observe(s); });
+
+  // ----- mobile drawer (chevron) -----
+  var sidebar = document.getElementById("sidebar");
+  var overlay = document.getElementById("overlay");
+  var navbtn = document.getElementById("navbtn");
+  function close(){ sidebar.classList.remove("open"); overlay.classList.remove("show"); navbtn.style.display = ""; }
+  function open(){ sidebar.classList.add("open"); overlay.classList.add("show"); navbtn.style.display = "none"; }
+  navbtn.addEventListener("click", open);
+  overlay.addEventListener("click", close);
+  sidebar.addEventListener("click", function(e){ if (e.target.tagName === "A") close(); });
+})();
+</script>
+</body>
+</html>
