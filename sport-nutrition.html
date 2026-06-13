@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutrition du sportif — muscu & CrossFit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700;800&family=Martian+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4f6f1;
+    --surface:#ffffff;
+    --surface-2:#f7f9f4;
+    --ink:#1d2420;
+    --ink-soft:#565f57;
+    --ink-faint:#8a938b;
+    --line:#e4e8df;
+    --line-2:#d4dacd;
+    --green:#2f9e44;
+    --green-deep:#237a35;
+    --prot:#e0533a;
+    --prot-deep:#c23f29;
+    --carb:#cf9412;
+    --carb-deep:#a9790c;
+    --fat:#2f8f8a;
+    --fat-deep:#1f6e6a;
+    --radius:14px;
+    --mono:"Martian Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --body:"Outfit",system-ui,sans-serif;
+    --disp:"Anton","Outfit",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:24px}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17.5px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(640px 460px at 86% -6%,rgba(47,158,68,.12),transparent 60%),radial-gradient(560px 440px at 4% 4%,rgba(224,83,58,.07),transparent 58%)}
+  #top-progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:70;background:linear-gradient(90deg,var(--green),var(--carb));box-shadow:0 0 8px rgba(47,158,68,.45)}
+  a{color:var(--green-deep);text-decoration:none;border-bottom:1px solid rgba(35,122,53,.3)}
+  a:hover{border-bottom-color:var(--green-deep)}
+  strong{font-weight:700}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:64px 28px 26px;overflow:hidden}
+  .hero .plate{position:absolute;top:46px;right:14px;width:188px;height:188px;pointer-events:none}
+  @media(max-width:780px){.hero .plate{width:118px;height:118px;top:48px;right:0;opacity:.92}}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--green-deep);background:rgba(47,158,68,.1);border:1px solid rgba(47,158,68,.26);border-radius:999px;padding:7px 13px;font-weight:600}
+  .eyebrow .lk{width:7px;height:7px;border-radius:50%;background:var(--green)}
+  .hero h1{font-family:var(--disp);font-weight:400;font-size:clamp(46px,9.4vw,104px);line-height:.9;letter-spacing:.005em;margin:20px 0 0;text-transform:uppercase}
+  .hero h1 .a{color:var(--prot)}
+  .hero h1 .b{color:var(--green)}
+  .hero .lede{font-size:clamp(17px,2.2vw,21px);color:var(--ink-soft);max-width:660px;margin:22px 0 0;line-height:1.6}
+  .hero .lede b{color:var(--ink);font-weight:600}
+  .hero .sig{margin-top:18px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint)}
+  .hero>*{opacity:0;transform:translateY(12px);animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards}
+  .hero>*:nth-child(2){animation-delay:.05s}.hero>*:nth-child(3){animation-delay:.13s}.hero>*:nth-child(4){animation-delay:.22s}.hero>*:nth-child(5){animation-delay:.3s}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  /* ---------- LAYOUT ---------- */
+  .layout{position:relative;z-index:1;max-width:1300px;margin:0 auto;display:flex;gap:44px;padding:16px 28px 110px;align-items:flex-start}
+  .sidebar{width:260px;flex:none;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;padding-right:4px}
+  .sidebar .sb-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:4px 0 12px}
+  .toc{list-style:none;margin:0;padding:0}
+  .toc .grp{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gc);font-weight:700;margin:17px 0 6px;display:flex;align-items:center;gap:7px}
+  .toc .grp::before{content:"";width:9px;height:9px;border-radius:3px;background:var(--gc)}
+  .toc .grp.f{--gc:var(--green)} .toc .grp.m{--gc:var(--carb)} .toc .grp.a{--gc:var(--green-deep)} .toc .grp.s{--gc:var(--prot)} .toc .grp.e{--gc:var(--ink-faint)}
+  .toc li a{display:flex;gap:9px;align-items:baseline;padding:5px 0 5px 13px;border-left:2px solid var(--line);margin-left:1px;color:var(--ink-soft);font-size:14px;line-height:1.3;border-bottom:0}
+  .toc li a .num{font-family:var(--mono);font-size:10px;color:var(--ink-faint);min-width:22px;font-weight:600}
+  .toc li a:hover{color:var(--ink)}
+  .toc li a.active{color:var(--green-deep);border-left-color:var(--green)}
+  .toc li a.active .num{color:var(--green-deep)}
+  .sidebar .hint{margin-top:20px;font-size:12px;color:var(--ink-faint);line-height:1.5;border-top:1px solid var(--line);padding-top:13px}
+  .content{flex:1;min-width:0;max-width:824px}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding-top:40px;margin-top:10px;scroll-margin-top:20px}
+  section+section{border-top:1px solid var(--line);margin-top:50px}
+  .modtag{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--fam,var(--green));font-weight:600}
+  .modtag .dot{width:8px;height:8px;border-radius:3px;background:var(--fam,var(--green))}
+  .fam-found{--fam:#2f9e44} .fam-prot{--fam:#e0533a} .fam-carb{--fam:#cf9412} .fam-fat{--fam:#2f8f8a} .fam-app{--fam:#237a35} .fam-supp{--fam:#e0533a} .fam-spec{--fam:#cf5a2c} .fam-end{--fam:#565f57}
+  h2{font-family:var(--disp);font-weight:400;font-size:clamp(30px,5vw,50px);line-height:.98;letter-spacing:.01em;margin:9px 0 0;text-transform:uppercase}
+  h3{font-family:var(--body);font-weight:700;font-size:21px;margin:28px 0 4px;letter-spacing:-.01em;color:var(--ink)}
+  h4{font-family:var(--mono);font-weight:700;font-size:11.5px;letter-spacing:.04em;color:var(--fam,var(--green));text-transform:uppercase;margin:20px 0 4px}
+  p{margin:13px 0;color:var(--ink-soft)}
+  p b,li b{color:var(--ink);font-weight:600}
+  .lead{font-size:19px;color:var(--ink);line-height:1.55}
+  ul,ol{color:var(--ink-soft);padding-left:22px}
+  li{margin:7px 0}
+  .term{color:var(--green-deep);font-weight:600}
+  .intent{font-size:17.5px;color:var(--ink);margin:14px 0 4px;padding:13px 17px;border-left:3px solid var(--fam,var(--green));background:var(--surface);border-radius:0 12px 12px 0}
+  .intent b{color:var(--fam,var(--green))}
+
+  /* ---------- CALLOUTS ---------- */
+  .callout{margin:20px 0;border:1px solid var(--line-2);border-left-width:3px;border-radius:12px;padding:14px 17px;background:var(--surface);display:flex;gap:13px;align-items:flex-start}
+  .callout .ic{font-size:18px;line-height:1.4;flex:none}
+  .callout .bd{flex:1}.callout p{margin:3px 0;color:var(--ink-soft)}
+  .callout .lab{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;margin-bottom:2px}
+  .c-sci{border-left-color:var(--fat)} .c-sci .lab{color:var(--fat-deep)}
+  .c-coach{border-left-color:var(--green)} .c-coach .lab{color:var(--green-deep)}
+  .c-key{border-left-color:var(--carb);background:rgba(207,148,18,.06)} .c-key .lab{color:var(--carb-deep)}
+  .c-warn{border-left-color:var(--prot);background:rgba(224,83,58,.05)} .c-warn .lab{color:var(--prot-deep)}
+  .c-safe{border-left-color:var(--green-deep);background:rgba(47,158,68,.06)} .c-safe .lab{color:var(--green-deep)}
+
+  /* ---------- MACRO CARDS ---------- */
+  .macros{margin:22px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:680px){.macros{grid-template-columns:1fr}}
+  .mcard{border:1px solid var(--line-2);border-top:3px solid var(--mc);border-radius:12px;background:var(--surface);padding:14px 15px}
+  .mcard.p{--mc:var(--prot)} .mcard.c{--mc:var(--carb)} .mcard.f{--mc:var(--fat)}
+  .mcard .mt{font-family:var(--disp);font-weight:400;font-size:21px;text-transform:uppercase;letter-spacing:.02em;color:var(--mc)}
+  .mcard .mv{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--ink);margin:2px 0 6px}
+  .mcard .mv small{font-family:var(--body);font-weight:500;color:var(--ink-faint);font-size:11.5px}
+  .mcard p{margin:0;font-size:13.5px;color:var(--ink-soft)}
+
+  /* ---------- COMPARE (Mythe / Réalité) ---------- */
+  .compare{margin:20px 0;border:1px solid var(--line-2);border-radius:12px;overflow:hidden;background:var(--surface)}
+  .ctabs{display:flex;border-bottom:1px solid var(--line)}
+  .ctab{flex:1;font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--ink-faint);background:transparent;border:0;padding:11px 10px;cursor:pointer;transition:.16s;border-bottom:2px solid transparent;letter-spacing:.03em;text-transform:uppercase}
+  .ctab:hover{color:var(--ink-soft)}
+  .ctab.active.bad{color:var(--prot);border-bottom-color:var(--prot);background:rgba(224,83,58,.06)}
+  .ctab.active.good{color:var(--green-deep);border-bottom-color:var(--green);background:rgba(47,158,68,.06)}
+  .cpanel{display:none;padding:15px 17px;font-size:15px}.cpanel.active{display:block;animation:fade .22s ease}
+  .cpanel p{margin:0;color:var(--ink-soft)}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .cpanel.bad{background:rgba(224,83,58,.04)} .cpanel.good{background:rgba(47,158,68,.04)}
+
+  /* ---------- FIGURES ---------- */
+  figure{margin:24px 0}
+  .fig{border:1px solid var(--line-2);border-radius:14px;background:var(--surface);padding:18px}
+  .fig svg{display:block;width:100%;height:auto}
+  figcaption{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);text-align:center;margin-top:10px}
+  .d-lbl{font-family:var(--mono);font-size:11px;fill:var(--ink-soft)}
+  .d-lbl-sm{font-family:var(--mono);font-size:9px;fill:var(--ink-faint)}
+  .d-title{font-family:var(--mono);font-size:11px;fill:var(--ink);font-weight:700}
+
+  /* ---------- SHEET ---------- */
+  .sheet{margin:22px 0;border:1px solid var(--line-2);border-radius:12px;overflow:hidden;background:var(--surface)}
+  .sheet table{border-collapse:collapse;width:100%;font-size:13.5px}
+  .sheet th,.sheet td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+  .sheet th{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--green-deep);background:rgba(47,158,68,.05)}
+  .sheet td:first-child{font-family:var(--mono);font-size:11.5px;color:var(--ink);white-space:nowrap;font-weight:600}
+  .sheet tr:last-child td{border-bottom:0}
+  .sheet td.d{font-family:var(--body);white-space:normal;color:var(--ink-soft)}
+
+  /* ---------- STEPS / CHECKLIST ---------- */
+  .steps{margin:22px 0;display:grid;gap:10px;counter-reset:s}
+  .step{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:13px 16px;background:var(--surface)}
+  .step::before{counter-increment:s;content:counter(s);font-family:var(--disp);font-weight:400;font-size:22px;color:var(--green);line-height:1.1;flex:none;min-width:24px}
+  .step h5{margin:0 0 2px;font-weight:700;font-size:16px;color:var(--ink)}
+  .step p{margin:0;font-size:14px;color:var(--ink-soft)}
+  .checklist{margin:20px 0;display:grid;gap:8px}
+  .ck{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:11px;padding:11px 15px;background:var(--surface)}
+  .ck .box{flex:none;width:17px;height:17px;border:1.5px solid var(--green);border-radius:5px;margin-top:3px;position:relative}
+  .ck .box::after{content:"✓";position:absolute;inset:-4px 0 0 1px;color:var(--green);font-size:13px;font-weight:700}
+  .ck span{color:var(--ink);font-size:14.5px}
+
+  /* ---------- ESTIMATOR ---------- */
+  .estim{margin:22px 0;border:1px solid var(--line-2);border-radius:14px;background:var(--surface);overflow:hidden}
+  .estim-top{padding:16px 18px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+  .estim-top h4{margin:0 0 3px;color:var(--green-deep)}
+  .estim-top p{margin:0;font-size:13px;color:var(--ink-soft)}
+  .estim-row{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;padding:16px 18px}
+  .estim-field{display:flex;flex-direction:column;gap:6px}
+  .estim-field .fl{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+  .estim-input{display:flex;align-items:center;gap:8px}
+  .estim-input input{width:96px;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--ink);background:var(--bg);border:1px solid var(--line-2);border-radius:9px;padding:9px 11px;outline:none}
+  .estim-input input:focus{border-color:var(--green)}
+  .estim-input span{font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+  .estim-seg{display:inline-flex;background:var(--bg);border:1px solid var(--line-2);border-radius:10px;padding:4px;gap:3px;flex-wrap:wrap}
+  .estim-seg button{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--ink-soft);background:transparent;border:0;border-radius:7px;padding:8px 12px;cursor:pointer;transition:.15s}
+  .estim-seg button:hover{color:var(--ink)}
+  .estim-seg button.on{background:var(--green);color:#fff}
+  .estim-out{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 18px 16px}
+  @media(max-width:680px){.estim-out{grid-template-columns:repeat(2,1fr)}}
+  .ecard{border:1px solid var(--line);border-top:3px solid var(--ec,var(--green));border-radius:11px;padding:11px 13px;background:var(--surface-2)}
+  .ecard .el{font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+  .ecard .en{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--ink);margin-top:3px;line-height:1.15}
+  .ecard .eu{font-family:var(--body);font-size:11px;color:var(--ink-faint)}
+  .ecard.kcal{--ec:var(--green)} .ecard.p{--ec:var(--prot)} .ecard.c{--ec:var(--carb)} .ecard.f{--ec:var(--fat)}
+  .estim-note{padding:0 18px 18px;margin:0;font-size:12.5px;color:var(--ink-faint);line-height:1.5}
+  .estim-adj{margin:0 18px 16px;padding:11px 14px;border-radius:10px;background:rgba(47,158,68,.06);border:1px solid rgba(47,158,68,.18);font-size:13px;color:var(--ink-soft)}
+  .estim-adj b{color:var(--green-deep)}
+
+  /* ---------- REVEAL ---------- */
+  .reveal{margin:16px 0}
+  .reveal-btn{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--green-deep);background:rgba(47,158,68,.08);border:1px solid rgba(47,158,68,.22);border-radius:8px;padding:8px 14px;cursor:pointer}
+  .reveal-btn:hover{background:rgba(47,158,68,.14)}
+  .reveal .body{display:none;margin-top:10px}
+  .reveal.open .body{display:block;animation:fade .2s ease}
+  .daycard{border:1px solid var(--line-2);border-radius:12px;background:var(--surface);overflow:hidden}
+  .daycard .dh{font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--green-deep);padding:10px 15px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+  .meal{display:flex;gap:12px;padding:10px 15px;border-bottom:1px solid var(--line)}
+  .meal:last-child{border-bottom:0}
+  .meal .mw{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);font-weight:700;min-width:74px;flex:none;padding-top:2px}
+  .meal .mc{font-size:14px;color:var(--ink-soft)}
+  .meal .mc b{color:var(--ink)}
+
+  #navbtn{display:none}
+  .overlay{display:none}
+  footer{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:24px 28px 64px;border-top:1px solid var(--line);color:var(--ink-faint);font-size:14px}
+  footer b{color:var(--ink-soft)}
+
+  @media(max-width:1000px){
+    body{font-size:16.5px}
+    .layout{display:block;padding:14px 20px 84px}
+    .content{max-width:none}
+    .sidebar{position:fixed;top:0;left:0;height:100dvh;width:84vw;max-width:316px;z-index:50;background:var(--surface);border-right:1px solid var(--line-2);padding:66px 20px 28px 22px;transform:translateX(-104%);transition:transform .3s cubic-bezier(.3,.7,.2,1);max-height:none;box-shadow:8px 0 30px -12px rgba(29,36,32,.22)}
+    .sidebar.open{transform:none}
+    .overlay{display:block;position:fixed;inset:0;background:rgba(29,36,32,.42);z-index:45;opacity:0;pointer-events:none;transition:.3s}
+    .overlay.show{opacity:1;pointer-events:auto}
+    #navbtn{display:flex;align-items:center;justify-content:center;position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:40;width:24px;height:54px;background:rgba(255,255,255,.93);border:1px solid var(--line-2);border-left:0;border-radius:0 10px 10px 0;color:var(--ink-faint);cursor:pointer;box-shadow:2px 0 10px -4px rgba(29,36,32,.25)}
+    #navbtn:hover{color:var(--green-deep)}
+    #navbtn svg{width:14px;height:14px}
+    .hero{padding:46px 20px 16px}
+  }
+</style>
+</head>
+<body>
+<div id="top-progress"></div>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <svg class="plate" viewBox="0 0 188 188" aria-hidden="true">
+    <circle cx="94" cy="94" r="78" fill="#ffffff" stroke="#d4dacd" stroke-width="2"/>
+    <circle cx="94" cy="94" r="64" fill="none" stroke="#e4e8df" stroke-width="1.4"/>
+    <!-- segment protéines -->
+    <path d="M94 94 L94 30 A64 64 0 0 1 150 70 Z" fill="#e0533a" opacity="0.9"/>
+    <!-- segment glucides -->
+    <path d="M94 94 L150 70 A64 64 0 0 1 110 154 Z" fill="#cf9412" opacity="0.9"/>
+    <!-- segment légumes/lipides -->
+    <path d="M94 94 L110 154 A64 64 0 1 1 94 30 Z" fill="#2f9e44" opacity="0.88"/>
+    <circle cx="94" cy="94" r="15" fill="#ffffff"/>
+    <!-- fourchette + couteau croisés -->
+    <g stroke="#1d2420" stroke-width="3" stroke-linecap="round">
+      <line x1="78" y1="86" x2="110" y2="118"/>
+      <line x1="110" y1="86" x2="78" y2="118"/>
+    </g>
+    <circle cx="94" cy="102" r="3" fill="#1d2420"/>
+  </svg>
+  <span class="eyebrow"><span class="lk"></span>Formation &nbsp;·&nbsp; Nutrition · Muscu &amp; CrossFit 💪</span>
+  <h1>Manger<br><span class="a">pour</span> <span class="b">performer</span></h1>
+  <p class="lede">La nutrition est le levier le plus négligé de la progression : c'est elle qui <b>construit le muscle</b>, <b>alimente l'effort</b> et <b>accélère la récupération</b>. Ce parcours pose les fondations — énergie, macros, timing, compléments — au service de la <b>force, de la performance et de la santé</b>, sans dogme ni privation extrême.</p>
+  <p class="sig">On ne s'entraîne pas dur pour mal manger. Le repas fait partie de l'entraînement.</p>
+</header>
+
+<!-- ============ LAYOUT ============ -->
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-title">Sommaire</div>
+    <ul class="toc" id="toc">
+      <li><a href="#intro"><span class="num">00</span>L'idée</a></li>
+      <li><a href="#energie"><span class="num">01</span>L'énergie</a></li>
+
+      <li class="grp m">Les macronutriments</li>
+      <li><a href="#proteines"><span class="num">02</span>Protéines</a></li>
+      <li><a href="#glucides"><span class="num">03</span>Glucides</a></li>
+      <li><a href="#lipides"><span class="num">04</span>Lipides</a></li>
+
+      <li class="grp a">Mettre en pratique</li>
+      <li><a href="#estimateur"><span class="num">★</span>Vos repères</a></li>
+      <li><a href="#prise"><span class="num">05</span>Prise de masse</a></li>
+      <li><a href="#seche"><span class="num">06</span>Sèche</a></li>
+      <li><a href="#timing"><span class="num">07</span>Timing &amp; effort</a></li>
+      <li><a href="#hydratation"><span class="num">08</span>Hydratation</a></li>
+
+      <li class="grp s">Aller plus loin</li>
+      <li><a href="#complements"><span class="num">09</span>Compléments</a></li>
+      <li><a href="#crossfit"><span class="num">10</span>CrossFit vs muscu</a></li>
+      <li><a href="#journees"><span class="num">11</span>Vos journées</a></li>
+      <li><a href="#mythes"><span class="num">12</span>Mythes &amp; réalités</a></li>
+
+      <li class="grp e">Pour finir</li>
+      <li><a href="#checklist"><span class="num">✓</span>Checklist</a></li>
+      <li><a href="#antiseche"><span class="num">≡</span>Antisèche</a></li>
+    </ul>
+    <div class="hint">Vert = fondations · rouge = protéines · ambre = glucides · sarcelle = lipides. Repères donnés en fourchettes, à adapter à vous.</div>
+  </aside>
+
+  <main class="content">
+
+  <!-- ===== 00 INTRO ===== -->
+  <section id="intro" class="fam-found">
+    <div class="modtag"><span class="dot"></span>Fondations</div>
+    <h2>L'idée</h2>
+    <p class="lead">Vous pouvez vous entraîner parfaitement : sans la nutrition qui va avec, les résultats stagnent. Le muscle ne se construit pas à la salle — il se construit <b>au repos, avec les matériaux que vous lui donnez</b>. La salle est le signal ; l'assiette et le sommeil font le travail.</p>
+
+    <p>Bonne nouvelle : la nutrition sportive efficace est <b>simple</b>. Trois leviers suffisent à expliquer 90 % des résultats : <b>combien</b> vous mangez (l'énergie), <b>quoi</b> (les macronutriments, protéines en tête), et <b>comment vous le répartissez</b> autour de l'effort. Tout le reste — timing fin, compléments — n'est qu'un ajustement à la marge.</p>
+
+    <p>Ce cours s'adresse autant au pratiquant de <b>musculation</b> (objectif hypertrophie et force) qu'au <b>CrossFit</b> (mélange de force, de métabolique et d'endurance). Les principes sont communs ; les dosages s'ajustent, et une section dédiée fait le tri.</p>
+
+    <div class="callout c-safe">
+      <div class="ic">🧭</div>
+      <div class="bd"><span class="lab">Cadre &amp; bon sens</span>
+      <p>Ce contenu est <b>éducatif</b> et donne des <b>fourchettes générales</b> validées par la recherche, pas un régime personnalisé. Les besoins varient selon chacun. Pour un plan adapté à votre situation — ou en cas de pathologie, de compétition, ou de doute — appuyez-vous sur un <b>diététicien du sport</b> ou un <b>médecin du sport</b>. L'objectif ici est la performance durable et la santé, jamais la restriction à tout prix.</p></div>
+    </div>
+
+    <div class="callout c-coach">
+      <div class="ic">🎯</div>
+      <div class="bd"><span class="lab">L'état d'esprit</span>
+      <p>Pensez « <b>nourrir une performance</b> », pas « se priver ». La nourriture est le carburant et les briques de votre progression. Une approche flexible, suffisante et régulière bat toujours un régime parfait mais intenable.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 01 ENERGIE ===== -->
+  <section id="energie" class="fam-found">
+    <div class="modtag"><span class="dot"></span>Fondations · 01</div>
+    <h2>L'énergie</h2>
+    <p class="intent"><b>Le levier n°1 —</b> Votre <b>balance énergétique</b> (énergie ingérée vs énergie dépensée) décide de la direction : prendre du poids, le maintenir, ou en perdre. Les macros décident ensuite de la <i>qualité</i> de ce changement (muscle ou gras).</p>
+
+    <p>Votre dépense quotidienne totale (souvent notée <span class="term">TDEE</span>) additionne votre métabolisme de base, la digestion, l'activité du quotidien et l'entraînement. Comparée à vos apports, elle donne trois scénarios :</p>
+
+    <figure>
+      <div class="fig">
+        <svg viewBox="0 0 600 220" role="img" aria-label="Balance énergétique et résultats">
+          <text x="300" y="22" text-anchor="middle" class="d-title">Apport vs dépense → trois directions</text>
+          <!-- déficit -->
+          <text x="100" y="52" text-anchor="middle" class="d-lbl" fill="#e0533a">Déficit</text>
+          <rect x="64" y="64" width="30" height="40" rx="4" fill="#cdd4c8"/><text x="79" y="118" text-anchor="middle" class="d-lbl-sm">apport</text>
+          <rect x="106" y="64" width="30" height="66" rx="4" fill="#8a938b"/><text x="121" y="144" text-anchor="middle" class="d-lbl-sm">dépense</text>
+          <text x="100" y="176" text-anchor="middle" class="d-lbl" fill="#c23f29">↓ perte de gras</text>
+          <text x="100" y="194" text-anchor="middle" class="d-lbl-sm">(muscle préservé si protéines + force)</text>
+          <!-- maintien -->
+          <text x="300" y="52" text-anchor="middle" class="d-lbl" fill="#565f57">Maintien</text>
+          <rect x="264" y="64" width="30" height="54" rx="4" fill="#9aa39b"/><rect x="306" y="64" width="30" height="54" rx="4" fill="#8a938b"/>
+          <text x="300" y="176" text-anchor="middle" class="d-lbl" fill="#565f57">= stabilité</text>
+          <text x="300" y="194" text-anchor="middle" class="d-lbl-sm">(recomposition lente possible)</text>
+          <!-- surplus -->
+          <text x="500" y="52" text-anchor="middle" class="d-lbl" fill="#2f9e44">Surplus</text>
+          <rect x="464" y="64" width="30" height="66" rx="4" fill="#5bbf6e"/><text x="479" y="144" text-anchor="middle" class="d-lbl-sm">apport</text>
+          <rect x="506" y="64" width="30" height="50" rx="4" fill="#8a938b"/><text x="521" y="128" text-anchor="middle" class="d-lbl-sm">dépense</text>
+          <text x="500" y="176" text-anchor="middle" class="d-lbl" fill="#237a35">↑ prise de muscle</text>
+          <text x="500" y="194" text-anchor="middle" class="d-lbl-sm">(un peu de gras si surplus trop grand)</text>
+        </svg>
+      </div>
+      <figcaption>La direction vient de l'énergie ; la composition (muscle vs gras) vient des macros et de l'entraînement.</figcaption>
+    </figure>
+
+    <h3>Estimer son point de départ</h3>
+    <p>Inutile de viser une précision illusoire : on part d'une <b>estimation</b>, puis on ajuste sur le réel. Un repère simple pour une personne active : autour de <b>30 à 38 kcal par kg</b> de poids de corps et par jour selon le volume d'entraînement. C'est un point de départ, pas une vérité gravée.</p>
+
+    <div class="callout c-sci">
+      <div class="ic">🧪</div>
+      <div class="bd"><span class="lab">La vraie mesure, c'est le réel</span>
+      <p>Aucune formule ne bat l'observation. Mangez de façon stable <b>2 à 3 semaines</b>, suivez votre poids (moyenne hebdomadaire, pas le chiffre du jour) et vos performances, puis ajustez par petits paliers. Votre corps est le calorimètre le plus fiable.</p></div>
+    </div>
+
+    <p>Plutôt que de tout peser à vie, beaucoup progressent très bien en gardant des <b>repères stables</b> (mêmes bases de repas) et en jouant sur les portions. L'outil de la section « <a href="#estimateur">Vos repères</a> » vous donne des fourchettes de départ.</p>
+  </section>
+
+  <!-- ===== 02 PROTEINES ===== -->
+  <section id="proteines" class="fam-prot">
+    <div class="modtag"><span class="dot"></span>Macronutriments · 02</div>
+    <h2>Protéines</h2>
+    <p class="intent"><b>La brique du muscle —</b> Les protéines fournissent les acides aminés qui <b>réparent et construisent</b> le tissu musculaire après l'effort. C'est le macronutriment à sécuriser <i>en premier</i>, en prise de masse comme en sèche.</p>
+
+    <p>L'entraînement crée un stimulus ; les protéines alimentaires déclenchent la <span class="term">synthèse protéique musculaire</span> (la construction). Tant que vous vous entraînez et mangez assez de protéines, le solde penche vers le gain. En déficit, des protéines élevées <b>protègent</b> le muscle pendant que vous perdez du gras.</p>
+
+    <div class="macros">
+      <div class="mcard p">
+        <div class="mt">Combien</div>
+        <div class="mv">1,6 – 2,2 <small>g/kg/jour</small></div>
+        <p>La fourchette où les gains plafonnent. Inutile d'aller bien au-delà ; visez le haut en sèche.</p>
+      </div>
+      <div class="mcard p">
+        <div class="mt">Par repas</div>
+        <div class="mv">≈ 0,3 – 0,4 <small>g/kg (~20-40 g)</small></div>
+        <p>Réparti sur 3 à 5 prises : plus efficace qu'une seule grosse dose pour stimuler la construction.</p>
+      </div>
+      <div class="mcard p">
+        <div class="mt">Sources</div>
+        <div class="mv">Variées</div>
+        <p>Œufs, viandes, poissons, laitages, mais aussi légumineuses, tofu, tempeh, whey en complément.</p>
+      </div>
+    </div>
+
+    <figure>
+      <div class="fig">
+        <svg viewBox="0 0 600 200" role="img" aria-label="Répartition des protéines sur la journée">
+          <text x="300" y="20" text-anchor="middle" class="d-title">Répartir &gt; concentrer (à apport total égal)</text>
+          <text x="150" y="44" text-anchor="middle" class="d-lbl-sm" fill="#c23f29">Tout d'un coup</text>
+          <rect x="92" y="120" width="116" height="44" rx="5" fill="#e0533a"/>
+          <text x="150" y="147" text-anchor="middle" class="d-lbl-sm" fill="#ffffff">~120 g · 1 repas</text>
+          <text x="150" y="182" text-anchor="middle" class="d-lbl-sm">1 seul pic de construction</text>
+          <line x1="300" y1="40" x2="300" y2="180" stroke="#e4e8df"/>
+          <text x="452" y="44" text-anchor="middle" class="d-lbl-sm" fill="#237a35">Réparti</text>
+          <g fill="#e0533a">
+            <rect x="338" y="120" width="44" height="44" rx="5"/><rect x="392" y="120" width="44" height="44" rx="5"/><rect x="446" y="120" width="44" height="44" rx="5"/><rect x="500" y="120" width="44" height="44" rx="5"/>
+          </g>
+          <g class="d-lbl-sm" fill="#ffffff"><text x="360" y="147" text-anchor="middle">30g</text><text x="414" y="147" text-anchor="middle">30g</text><text x="468" y="147" text-anchor="middle">30g</text><text x="522" y="147" text-anchor="middle">30g</text></g>
+          <g class="d-lbl-sm" fill="#8a938b"><text x="360" y="112" text-anchor="middle">matin</text><text x="414" y="112" text-anchor="middle">midi</text><text x="468" y="112" text-anchor="middle">collation</text><text x="522" y="112" text-anchor="middle">soir</text></g>
+          <text x="441" y="182" text-anchor="middle" class="d-lbl-sm">plusieurs pics → plus de construction</text>
+        </svg>
+      </div>
+      <figcaption>Même quantité totale, mais étalée sur la journée : on relance plusieurs fois la synthèse musculaire.</figcaption>
+    </figure>
+
+    <div class="callout c-coach">
+      <div class="ic">🥚</div>
+      <div class="bd"><span class="lab">En pratique</span>
+      <p>Une portion de protéines à chaque repas (une paume à une paume et demie) couvre l'essentiel. Si vous peinez à atteindre la cible — fréquent chez les gros gabarits ou en régime végétal — une <b>protéine en poudre</b> est un dépannage pratique, pas une obligation.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 03 GLUCIDES ===== -->
+  <section id="glucides" class="fam-carb">
+    <div class="modtag"><span class="dot"></span>Macronutriments · 03</div>
+    <h2>Glucides</h2>
+    <p class="intent"><b>Le carburant de l'intensité —</b> Les glucides remplissent vos réserves de <span class="term">glycogène</span> (muscles et foie), l'essence des efforts intenses. En muscu lourde et surtout en CrossFit, ce sont eux qui tiennent la séance et la récupération.</p>
+
+    <p>Trop souvent diabolisés, les glucides sont au contraire l'allié du sportif de force : ils <b>soutiennent la performance</b>, <b>épargnent les protéines</b> (qui peuvent alors servir à construire plutôt qu'à fournir de l'énergie) et favorisent un bon environnement de récupération. Les couper drastiquement, c'est saboter ses séances.</p>
+
+    <div class="macros">
+      <div class="mcard c">
+        <div class="mt">Combien</div>
+        <div class="mv">≈ 3 – 7 <small>g/kg/jour</small></div>
+        <p>Selon le volume : bas pour un travail modéré, haut pour de gros entraînements (CrossFit, double séance).</p>
+      </div>
+      <div class="mcard c">
+        <div class="mt">Rôle</div>
+        <div class="mv">Glycogène</div>
+        <p>Le réservoir d'énergie rapide. Vidé par l'intensité, rechargé par les glucides.</p>
+      </div>
+      <div class="mcard c">
+        <div class="mt">Sources</div>
+        <div class="mv">Surtout complètes</div>
+        <p>Riz, pâtes, pommes de terre, avoine, fruits, légumineuses. Les sucres rapides : utiles surtout autour de l'effort.</p>
+      </div>
+    </div>
+
+    <div class="callout c-key">
+      <div class="ic">🍚</div>
+      <div class="bd"><span class="lab">À retenir</span>
+      <p>Les glucides sont la variable d'ajustement de votre énergie : une fois protéines et lipides posés, ils <b>complètent le reste</b> des calories. Concentrez-les <b>autour de l'entraînement</b> pour avoir du carburant avant et de quoi recharger après.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 04 LIPIDES ===== -->
+  <section id="lipides" class="fam-fat">
+    <div class="modtag"><span class="dot"></span>Macronutriments · 04</div>
+    <h2>Lipides</h2>
+    <p class="intent"><b>Le pilier hormonal —</b> Les lipides ne sont pas l'ennemi : ils sont indispensables à la production hormonale (dont la testostérone), à l'absorption des vitamines A, D, E, K et à la santé générale. Il y a un <b>plancher</b> à ne pas franchir.</p>
+
+    <p>Couper les graisses trop bas, sur la durée, perturbe les hormones et la récupération. Visez une base saine, en privilégiant la <b>qualité</b> : insaturées et oméga-3 en priorité.</p>
+
+    <div class="macros">
+      <div class="mcard f">
+        <div class="mt">Plancher</div>
+        <div class="mv">≈ 0,8 – 1 <small>g/kg/jour</small></div>
+        <p>Soit en général 20 à 35 % des calories. En dessous durablement, les hormones trinquent.</p>
+      </div>
+      <div class="mcard f">
+        <div class="mt">Qualité</div>
+        <div class="mv">Insaturés</div>
+        <p>Huile d'olive, avocat, oléagineux, poissons gras (oméga-3). Limiter les acides gras trans industriels.</p>
+      </div>
+      <div class="mcard f">
+        <div class="mt">Rôle</div>
+        <div class="mv">Hormones + santé</div>
+        <p>Membranes cellulaires, hormones, vitamines liposolubles, satiété.</p>
+      </div>
+    </div>
+
+    <div class="callout c-coach">
+      <div class="ic">🥑</div>
+      <div class="bd"><span class="lab">L'équilibre des trois</span>
+      <p>La méthode simple : posez d'abord les <b>protéines</b> (selon votre poids), puis un socle de <b>lipides</b> de qualité (le plancher), et laissez les <b>glucides</b> remplir le reste de votre budget énergétique selon votre objectif et votre volume d'entraînement.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== ESTIMATEUR ===== -->
+  <section id="estimateur" class="fam-app">
+    <div class="modtag"><span class="dot"></span>Mettre en pratique · ★</div>
+    <h2>Vos repères</h2>
+    <p class="lead">Pour rendre tout cela concret, voici un petit estimateur. Indiquez votre poids et votre volume d'entraînement : il traduit les fourchettes vues plus haut en grammes et calories de <b>départ</b>.</p>
+
+    <div class="estim" id="estim">
+      <div class="estim-top">
+        <h4>Estimateur de repères</h4>
+        <p>Des fourchettes générales pour démarrer — à ajuster selon vos résultats réels.</p>
+      </div>
+      <div class="estim-row">
+        <div class="estim-field">
+          <span class="fl">Poids de corps</span>
+          <div class="estim-input"><input id="poids" type="number" min="35" max="200" step="1" value="75" inputmode="numeric"> <span>kg</span></div>
+        </div>
+        <div class="estim-field">
+          <span class="fl">Volume d'entraînement</span>
+          <div class="estim-seg" id="seg" role="group" aria-label="Volume d'entraînement">
+            <button data-act="mod">Modéré</button>
+            <button data-act="high" class="on">Élevé</button>
+            <button data-act="vhigh">Très élevé</button>
+          </div>
+        </div>
+      </div>
+      <div class="estim-out" id="estim-out"></div>
+      <div class="estim-adj" id="estim-adj"></div>
+      <p class="estim-note">Repères éducatifs de départ, pas un plan personnalisé. Les besoins réels varient (âge, sexe, morphologie, niveau, sommeil, génétique). Suivez vos résultats sur 2-3 semaines et ajustez. Pour un accompagnement individualisé, en cas de pathologie ou de compétition, consultez un diététicien ou un médecin du sport.</p>
+    </div>
+
+    <div class="callout c-sci">
+      <div class="ic">📊</div>
+      <div class="bd"><span class="lab">Comment lire ces chiffres</span>
+      <p>L'énergie de maintien est le point <b>neutre</b>. Pour construire du muscle, on ajoute un léger surplus ; pour perdre du gras, un léger déficit (voir les deux sections suivantes). Les grammes de macros, eux, restent globalement stables : c'est surtout les glucides qu'on module.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 05 PRISE DE MASSE ===== -->
+  <section id="prise" class="fam-app">
+    <div class="modtag"><span class="dot"></span>Mettre en pratique · 05</div>
+    <h2>Prise de masse</h2>
+    <p class="intent"><b>Construire, proprement —</b> Pour gagner du muscle, il faut un <b>léger surplus</b> énergétique et un entraînement qui progresse. La clé : surplus <i>modéré</i>, pour maximiser le muscle et minimiser le gras.</p>
+
+    <p>Le muscle se construit lentement. Un surplus énorme n'accélère pas la prise de muscle — il ajoute surtout du gras qu'il faudra reperdre. Visez la patience : un surplus de l'ordre de <b>+250 à +500 kcal</b> au-dessus du maintien suffit largement.</p>
+
+    <div class="steps">
+      <div class="step"><div><h5>Un surplus léger</h5><p>≈ +10 à +15 % au-dessus du maintien (souvent +250 à +500 kcal/jour). Plus n'est pas mieux.</p></div></div>
+      <div class="step"><div><h5>Une vitesse raisonnable</h5><p>Viser ≈ +0,25 à +0,5 % de poids de corps par semaine (plus lent quand on est déjà avancé).</p></div></div>
+      <div class="step"><div><h5>Protéines hautes, glucides en soutien</h5><p>1,6-2,2 g/kg de protéines ; les glucides montent pour alimenter le volume et la progression.</p></div></div>
+      <div class="step"><div><h5>La surcharge progressive</h5><p>Sans entraînement qui progresse (charges, répétitions, qualité), le surplus part en gras. Mangez pour progresser, pas l'inverse.</p></div></div>
+    </div>
+
+    <div class="callout c-warn">
+      <div class="ic">⚠️</div>
+      <div class="bd"><span class="lab">Le piège du « dirty bulk »</span>
+      <p>Manger sans limite « pour prendre » fait surtout grimper le gras, allonge la sèche ensuite et dégrade la santé métabolique. Un surplus contrôlé et des aliments de qualité donnent une prise plus sèche et plus durable.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 06 SECHE ===== -->
+  <section id="seche" class="fam-app">
+    <div class="modtag"><span class="dot"></span>Mettre en pratique · 06</div>
+    <h2>Sèche</h2>
+    <p class="intent"><b>Perdre le gras, garder le muscle —</b> La perte de gras demande un <b>déficit modéré</b>, des <b>protéines élevées</b> et le <b>maintien de l'entraînement en force</b>. Le but n'est pas de « manger le moins possible », mais de perdre du gras en préservant le muscle et la performance.</p>
+
+    <div class="steps">
+      <div class="step"><div><h5>Un déficit modéré</h5><p>≈ -15 à -20 % sous le maintien (souvent -300 à -500 kcal/jour). Un déficit trop agressif fait fondre le muscle et la performance.</p></div></div>
+      <div class="step"><div><h5>Protéines au plus haut</h5><p>Vers 2,0-2,2 g/kg : c'est le facteur n°1 de préservation musculaire en déficit, avec la satiété en bonus.</p></div></div>
+      <div class="step"><div><h5>Garder les charges lourdes</h5><p>Continuez la force : c'est le signal qui dit au corps de <b>conserver</b> le muscle. On ne « tonifie » pas en faisant seulement du léger.</p></div></div>
+      <div class="step"><div><h5>Un rythme tenable</h5><p>≈ 0,5 à 1 % de poids de corps par semaine au maximum. Plus lent = plus de muscle gardé, et plus durable.</p></div></div>
+    </div>
+
+    <div class="callout c-safe">
+      <div class="ic">🩺</div>
+      <div class="bd"><span class="lab">Santé d'abord — signaux à respecter</span>
+      <p>Une sèche trop dure ou trop longue se paie : chute des performances, fatigue persistante, sommeil dégradé, irritabilité, troubles du cycle menstruel, libido en berne, blessures. Ce sont des signaux d'<b>en faire trop</b> — pas des étapes à pousser. Des phases de maintien régulières sont saines. Si le rapport à la nourriture ou au corps devient une source d'anxiété, de contrôle ou de détresse, parlez-en à un professionnel de santé : c'est un signe de force, pas de faiblesse.</p></div>
+    </div>
+
+    <div class="callout c-coach">
+      <div class="ic">🥗</div>
+      <div class="bd"><span class="lab">Tenir le déficit sans souffrir</span>
+      <p>Priorisez le volume alimentaire rassasiant (légumes, protéines maigres, fibres), gardez des glucides autour des séances, et ménagez une marge de flexibilité pour la vie sociale. Un déficit qu'on tient bat un déficit parfait qu'on abandonne.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 07 TIMING ===== -->
+  <section id="timing" class="fam-app">
+    <div class="modtag"><span class="dot"></span>Mettre en pratique · 07</div>
+    <h2>Timing &amp; effort</h2>
+    <p class="intent"><b>Le détail qui peaufine —</b> Le <i>total</i> quotidien fait l'essentiel. Mais bien placer ses repas autour de l'entraînement améliore l'énergie pendant la séance et la récupération après. C'est un ajustement, pas une obsession.</p>
+
+    <figure>
+      <div class="fig">
+        <svg viewBox="0 0 600 168" role="img" aria-label="Nutrition autour de l'entraînement">
+          <line x1="40" y1="92" x2="560" y2="92" stroke="#d4dacd" stroke-width="2"/>
+          <circle cx="150" cy="92" r="7" fill="#cf9412"/><circle cx="300" cy="92" r="9" fill="#e0533a"/><circle cx="450" cy="92" r="7" fill="#2f9e44"/>
+          <text x="300" y="40" text-anchor="middle" class="d-title">Séance</text>
+          <line x1="300" y1="48" x2="300" y2="83" stroke="#e0533a" stroke-width="1.4" stroke-dasharray="3 3"/>
+          <text x="150" y="120" text-anchor="middle" class="d-lbl" fill="#a9790c">Avant (1-3 h)</text>
+          <text x="150" y="138" text-anchor="middle" class="d-lbl-sm">repas avec glucides</text>
+          <text x="150" y="152" text-anchor="middle" class="d-lbl-sm">+ protéines</text>
+          <text x="300" y="120" text-anchor="middle" class="d-lbl" fill="#c23f29">Pendant</text>
+          <text x="300" y="138" text-anchor="middle" class="d-lbl-sm">eau ; glucides si</text>
+          <text x="300" y="152" text-anchor="middle" class="d-lbl-sm">séance &gt; 75-90 min</text>
+          <text x="450" y="120" text-anchor="middle" class="d-lbl" fill="#237a35">Après (0-2 h)</text>
+          <text x="450" y="138" text-anchor="middle" class="d-lbl-sm">protéines + glucides</text>
+          <text x="450" y="152" text-anchor="middle" class="d-lbl-sm">pour recharger</text>
+        </svg>
+      </div>
+      <figcaption>Avant : faire le plein. Après : reconstruire et recharger. Autour, l'hydratation.</figcaption>
+    </figure>
+
+    <h4>Avant la séance</h4>
+    <p>Un repas avec <b>glucides + protéines</b> 1 à 3 h avant donne du carburant et limite la dégradation musculaire. Trop près de l'effort, préférez quelque chose de léger et digeste.</p>
+    <h4>Après la séance</h4>
+    <p>Un apport de <b>protéines</b> (≈ 20-40 g) avec des <b>glucides</b> dans les heures qui suivent soutient la reconstruction et recharge le glycogène — particulièrement utile si la prochaine séance est proche.</p>
+
+    <div class="callout c-sci">
+      <div class="ic">⏱️</div>
+      <div class="bd"><span class="lab">La « fenêtre anabolique », sans le mythe</span>
+      <p>Oubliez l'idée d'une fenêtre de 30 minutes après laquelle « tout est perdu ». La recherche montre une fenêtre <b>bien plus large</b> (plusieurs heures), surtout si vous avez mangé avant la séance. Le plus important reste votre <b>apport total sur la journée</b>.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 08 HYDRATATION ===== -->
+  <section id="hydratation" class="fam-app">
+    <div class="modtag"><span class="dot"></span>Mettre en pratique · 08</div>
+    <h2>Hydratation</h2>
+    <p class="intent"><b>La performance invisible —</b> Quelques pour-cent de déshydratation suffisent à faire chuter force, endurance et concentration. En CrossFit et par forte chaleur, où l'on transpire beaucoup, c'est un levier de performance immédiat.</p>
+
+    <p>Pas besoin de protocole compliqué : buvez régulièrement sur la journée, davantage autour de l'entraînement, et écoutez les signaux. Un repère pratique : une urine <b>jaune pâle</b> indique une bonne hydratation ; foncée, il faut boire.</p>
+
+    <div class="sheet">
+      <table><tbody>
+        <tr><td>Au quotidien</td><td class="d">Boire régulièrement ; les besoins augmentent avec l'entraînement, la chaleur et la sudation.</td></tr>
+        <tr><td>Avant</td><td class="d">Arriver bien hydraté : un verre ou deux dans les heures qui précèdent.</td></tr>
+        <tr><td>Pendant</td><td class="d">Boire par petites gorgées, surtout si la séance est longue ou intense.</td></tr>
+        <tr><td>Après</td><td class="d">Compenser les pertes ; au-delà d'1-1,5 L perdu, boire un peu plus que le volume perdu.</td></tr>
+        <tr><td>Électrolytes</td><td class="d">Sur les séances longues, très intenses ou très sudoripares, le <b>sodium</b> (et un peu de glucides) aide à mieux réhydrater.</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="callout c-warn">
+      <div class="ic">💧</div>
+      <div class="bd"><span class="lab">Ni trop peu, ni trop</span>
+      <p>La déshydratation nuit à la performance, mais boire des quantités excessives d'eau pure en très peu de temps est aussi déconseillé (dilution du sodium). Visez la régularité et adaptez aux conditions, sans forcer à l'extrême.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 09 COMPLEMENTS ===== -->
+  <section id="complements" class="fam-supp">
+    <div class="modtag"><span class="dot"></span>Aller plus loin · 09</div>
+    <h2>Compléments</h2>
+    <p class="intent"><b>Le glaçage, pas le gâteau —</b> Aucun complément ne remplace une alimentation et un entraînement solides. Une poignée seulement a des preuves réelles ; le reste est surtout du marketing. On <b>complète</b> une base déjà bonne.</p>
+
+    <div class="sheet">
+      <table>
+        <thead><tr><th>Complément</th><th>Ce que dit la recherche</th></tr></thead>
+        <tbody>
+        <tr><td>Créatine monohydrate</td><td class="d">Le plus étudié et le plus efficace : soutient force, puissance et efforts intenses répétés. ≈ 3-5 g/jour, tous les jours. Sûr chez le sujet sain ; une légère prise d'eau initiale est normale.</td></tr>
+        <tr><td>Protéine en poudre</td><td class="d">Whey ou végétale : pratique pour <b>atteindre sa cible de protéines</b>, sans vertu magique. Un aliment comme un autre, en plus commode.</td></tr>
+        <tr><td>Caféine</td><td class="d">Améliore vigilance et performance (≈ 3-6 mg/kg avant l'effort). Attention à la tolérance, au sommeil et à la sensibilité individuelle.</td></tr>
+        <tr><td>Bêta-alanine</td><td class="d">Peut aider les efforts intenses d'≈ 1 à 4 min (fréquents en CrossFit), après plusieurs semaines. Les picotements sont sans danger.</td></tr>
+        <tr><td>Électrolytes</td><td class="d">Utiles sur séances longues/très sudoripares (sodium surtout). Inutiles pour une séance courte en salle.</td></tr>
+        <tr><td>Vitamine D, oméga-3…</td><td class="d">À envisager surtout pour <b>corriger un manque</b> (le dosage sanguin et l'avis médical guident). Les aliments d'abord.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout c-warn">
+      <div class="ic">🧴</div>
+      <div class="bd"><span class="lab">Prudence &amp; sécurité</span>
+      <p>Les compléments sont peu encadrés : choisissez des marques sérieuses, idéalement <b>testées par un tiers</b> (utile et nécessaire en cas de contrôle antidopage). Méfiance envers les promesses spectaculaires, les « brûleurs » et les mélanges opaques. En cas de traitement ou de pathologie, demandez un avis médical avant de vous supplémenter.</p></div>
+    </div>
+
+    <div class="callout c-key">
+      <div class="ic">🍽️</div>
+      <div class="bd"><span class="lab">L'ordre des priorités</span>
+      <p>Énergie correcte → protéines suffisantes → qualité des aliments et régularité → sommeil → <b>puis</b>, éventuellement, compléments. Sauter les étapes de base pour empiler des poudres, c'est dépenser sans rendement.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 10 CROSSFIT VS MUSCU ===== -->
+  <section id="crossfit" class="fam-spec">
+    <div class="modtag"><span class="dot"></span>Aller plus loin · 10</div>
+    <h2>CrossFit vs muscu</h2>
+    <p class="intent"><b>Mêmes bases, dosages différents —</b> Les principes sont communs, mais la demande énergétique diffère. La musculation vise surtout l'hypertrophie ; le CrossFit mêle force, conditionnement métabolique et endurance — ce qui change surtout les <b>glucides</b> et la <b>récupération</b>.</p>
+
+    <div class="sheet">
+      <table>
+        <thead><tr><th></th><th>Musculation (hypertrophie)</th><th>CrossFit</th></tr></thead>
+        <tbody>
+        <tr><td>Objectif</td><td class="d">Construire du muscle, gagner en force.</td><td class="d">Performance mixte : force + cardio + capacité de travail.</td></tr>
+        <tr><td>Protéines</td><td class="d">1,6-2,2 g/kg — central.</td><td class="d">1,6-2,2 g/kg aussi — pour réparer un stress varié.</td></tr>
+        <tr><td>Glucides</td><td class="d">Modérés à élevés selon le volume.</td><td class="d"><b>Plus élevés</b> : le métabolique vide vite le glycogène.</td></tr>
+        <tr><td>Énergie</td><td class="d">Léger surplus en prise ; déficit modéré en sèche.</td><td class="d">Souvent proche du maintien ; gros besoins les jours chargés.</td></tr>
+        <tr><td>Récupération</td><td class="d">Importante entre les séances d'un même groupe.</td><td class="d"><b>Cruciale</b> : fréquence élevée, recharge glycogène et sommeil prioritaires.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout c-coach">
+      <div class="ic">🔥</div>
+      <div class="bd"><span class="lab">Le réflexe CrossFit</span>
+      <p>Plus votre semaine est dense et métabolique, plus les <b>glucides</b> et la <b>récupération</b> deviennent décisifs. Les jours « gros volume » ou double séance, augmentez l'énergie (surtout les glucides) ; les jours off, on peut réduire. Ajuster l'apport au volume du jour, c'est déjà 80 % du travail.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 11 JOURNEES ===== -->
+  <section id="journees" class="fam-spec">
+    <div class="modtag"><span class="dot"></span>Aller plus loin · 11</div>
+    <h2>Vos journées</h2>
+    <p class="lead">La théorie devient utile une fois dans l'assiette. Voici deux exemples de <b>structure</b> de journée (et non des prescriptions) : à calibrer sur vos repères et vos goûts. Ce sont des trames, pas des règles.</p>
+
+    <div class="reveal">
+      <button class="reveal-btn">Voir un exemple — journée omnivore</button>
+      <div class="body">
+        <div class="daycard">
+          <div class="dh">Trame omnivore · entraînement en fin d'après-midi</div>
+          <div class="meal"><div class="mw">Matin</div><div class="mc"><b>Œufs + flocons d'avoine + fruit.</b> Protéines pour relancer la journée, glucides complets.</div></div>
+          <div class="meal"><div class="mw">Midi</div><div class="mc"><b>Viande ou poisson + riz/pâtes + légumes + huile d'olive.</b> L'assiette équilibrée classique.</div></div>
+          <div class="meal"><div class="mw">Pré-séance</div><div class="mc"><b>Fruit + yaourt</b> (ou une source de glucides digeste) 1-2 h avant.</div></div>
+          <div class="meal"><div class="mw">Post-séance</div><div class="mc"><b>Protéines + glucides</b> : repas du soir ou collation selon l'horaire.</div></div>
+          <div class="meal"><div class="mw">Soir</div><div class="mc"><b>Protéines + légumes + féculents</b> selon l'énergie restante du jour.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <button class="reveal-btn">Voir un exemple — journée végétarienne</button>
+      <div class="body">
+        <div class="daycard">
+          <div class="dh">Trame végétarienne · viser les protéines avec des sources variées</div>
+          <div class="meal"><div class="mw">Matin</div><div class="mc"><b>Skyr ou fromage blanc + avoine + graines + fruit.</b> Bonne densité protéique.</div></div>
+          <div class="meal"><div class="mw">Midi</div><div class="mc"><b>Légumineuses + céréales complètes</b> (lentilles-riz, pois chiches-semoule) <b>+ légumes.</b> Le duo qui complète les acides aminés.</div></div>
+          <div class="meal"><div class="mw">Collation</div><div class="mc"><b>Tofu/tempeh</b> ou un <b>shake protéiné végétal</b> pour atteindre la cible.</div></div>
+          <div class="meal"><div class="mw">Soir</div><div class="mc"><b>Œufs/laitages</b> (si ovo-lacto) <b>+ féculents + légumes</b> + filet d'huile.</div></div>
+        </div>
+        <div class="callout c-sci" style="margin-top:12px">
+          <div class="ic">🌱</div>
+          <div class="bd"><span class="lab">Spécificités végétales</span>
+          <p>En régime végétal, visez plutôt le <b>haut</b> de la fourchette protéique, <b>variez</b> les sources (légumineuses + céréales), et surveillez certains apports (vitamine B12 notamment, à supplémenter en régime végétalien). Un diététicien aide à sécuriser l'équilibre.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout c-coach">
+      <div class="ic">🍳</div>
+      <div class="bd"><span class="lab">Le secret, c'est la régularité</span>
+      <p>Quelques bases que vous savez cuisiner, préparées en lot (<i>batch cooking</i>), battent un plan compliqué tenu trois jours. Construisez 4-5 repas « par défaut » fiables, et ajustez les portions selon l'objectif.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== 12 MYTHES ===== -->
+  <section id="mythes" class="fam-end">
+    <div class="modtag"><span class="dot"></span>Aller plus loin · 12</div>
+    <h2>Mythes &amp; réalités</h2>
+    <p class="lead">La nutrition sportive charrie beaucoup d'idées reçues. Quelques-unes des plus tenaces, remises à l'endroit.</p>
+
+    <div class="compare" data-compare>
+      <div class="ctabs"><button class="ctab bad active" data-tab="0">Mythe</button><button class="ctab good" data-tab="1">Réalité</button></div>
+      <div class="cpanel bad active"><p>« Manger des glucides (ou manger le soir) fait grossir. »</p></div>
+      <div class="cpanel good"><p>C'est le <b>total énergétique</b> sur la journée qui détermine la prise de gras, pas un aliment ni une horloge. Les glucides sont un carburant clé du sportif de force ; placés autour de l'effort, ils servent la performance.</p></div>
+    </div>
+
+    <div class="compare" data-compare>
+      <div class="ctabs"><button class="ctab bad active" data-tab="0">Mythe</button><button class="ctab good" data-tab="1">Réalité</button></div>
+      <div class="cpanel bad active"><p>« Il faut une dose de protéines dans les 30 min, sinon la séance est perdue. »</p></div>
+      <div class="cpanel good"><p>La fenêtre est <b>bien plus large</b> que 30 minutes. Tant que votre <b>apport total quotidien</b> en protéines est atteint et réparti, le timing exact post-séance est secondaire.</p></div>
+    </div>
+
+    <div class="compare" data-compare>
+      <div class="ctabs"><button class="ctab bad active" data-tab="0">Mythe</button><button class="ctab good" data-tab="1">Réalité</button></div>
+      <div class="cpanel bad active"><p>« Les protéines abîment les reins. »</p></div>
+      <div class="cpanel good"><p>Chez une personne aux <b>reins sains</b>, des apports élevés de protéines n'ont pas montré de dommage rénal. En cas de <b>maladie rénale préexistante</b>, c'est différent : un avis médical s'impose.</p></div>
+    </div>
+
+    <div class="compare" data-compare>
+      <div class="ctabs"><button class="ctab bad active" data-tab="0">Mythe</button><button class="ctab good" data-tab="1">Réalité</button></div>
+      <div class="cpanel bad active"><p>« Il faut manger toutes les 2-3 h pour "relancer le métabolisme". »</p></div>
+      <div class="cpanel good"><p>La <b>fréquence</b> des repas n'a pas d'effet magique sur le métabolisme. Ce qui compte : l'apport total et une répartition <b>pratique</b> pour vous (3 à 5 prises suffisent généralement).</p></div>
+    </div>
+
+    <div class="compare" data-compare>
+      <div class="ctabs"><button class="ctab bad active" data-tab="0">Mythe</button><button class="ctab good" data-tab="1">Réalité</button></div>
+      <div class="cpanel bad active"><p>« Plus je mange de protéines, plus je prends du muscle, sans limite. »</p></div>
+      <div class="cpanel good"><p>Au-delà d'environ <b>1,6-2,2 g/kg</b>, le bénéfice sur la construction musculaire <b>plafonne</b>. Le surplus de protéines est simplement utilisé comme énergie — pas transformé en muscle supplémentaire.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== CHECKLIST ===== -->
+  <section id="checklist" class="fam-end">
+    <div class="modtag"><span class="dot"></span>Pour finir</div>
+    <h2>Checklist</h2>
+    <p class="lead">Les fondamentaux à cocher, dans l'ordre d'importance.</p>
+    <div class="checklist">
+      <div class="ck"><span class="box"></span><span>Mon <b>énergie</b> correspond à mon objectif : léger surplus (prise) ou léger déficit (sèche).</span></div>
+      <div class="ck"><span class="box"></span><span>Je vise <b>1,6-2,2 g/kg de protéines</b>, réparties sur 3 à 5 repas.</span></div>
+      <div class="ck"><span class="box"></span><span>Mes <b>glucides</b> alimentent mes séances et sont concentrés autour de l'effort.</span></div>
+      <div class="ck"><span class="box"></span><span>Je garde un <b>socle de lipides</b> de qualité (≈ 0,8-1 g/kg), sans descendre trop bas.</span></div>
+      <div class="ck"><span class="box"></span><span>Je <b>m'hydrate</b> régulièrement, surtout autour des séances intenses.</span></div>
+      <div class="ck"><span class="box"></span><span>Je privilégie des <b>aliments de qualité</b> (légumes, fibres, micronutriments), pas seulement des macros.</span></div>
+      <div class="ck"><span class="box"></span><span>Je <b>dors</b> suffisamment : la récupération fait partie de la nutrition au sens large.</span></div>
+      <div class="ck"><span class="box"></span><span>Les <b>compléments</b> ne viennent qu'après les bases (créatine, protéine, caféine si utiles).</span></div>
+      <div class="ck"><span class="box"></span><span>J'ajuste sur le <b>réel</b> (poids moyen + performances sur 2-3 semaines), pas sur le chiffre du jour.</span></div>
+      <div class="ck"><span class="box"></span><span>Mon approche reste <b>tenable et saine</b> ; je consulte un pro si besoin d'un plan adapté.</span></div>
+    </div>
+  </section>
+
+  <!-- ===== ANTISECHE ===== -->
+  <section id="antiseche" class="fam-end">
+    <div class="modtag"><span class="dot"></span>Pour finir</div>
+    <h2>Antisèche</h2>
+    <p class="lead">Les repères en un coup d'œil, les sources, et le vocabulaire.</p>
+
+    <h3>Repères par macronutriment</h3>
+    <div class="sheet">
+      <table>
+        <thead><tr><th>Macro</th><th>Repère</th><th>Rôle</th></tr></thead>
+        <tbody>
+        <tr><td>Protéines</td><td class="d">1,6 - 2,2 g/kg/jour (haut en sèche)</td><td class="d">Construire et préserver le muscle.</td></tr>
+        <tr><td>Glucides</td><td class="d">≈ 3 - 7 g/kg/jour selon le volume</td><td class="d">Carburant de l'intensité, recharge du glycogène.</td></tr>
+        <tr><td>Lipides</td><td class="d">≈ 0,8 - 1 g/kg/jour (plancher)</td><td class="d">Hormones, vitamines, santé.</td></tr>
+        <tr><td>Énergie</td><td class="d">Maintien ± léger ajustement</td><td class="d">Direction : prise (+250/500) ou perte (-300/500).</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Sources par macro</h3>
+    <div class="sheet">
+      <table><tbody>
+        <tr><td>Protéines</td><td class="d">Œufs, volaille, viande, poisson, laitages, légumineuses, tofu/tempeh, whey/protéine végétale.</td></tr>
+        <tr><td>Glucides</td><td class="d">Riz, pâtes, pommes de terre, avoine, pain complet, fruits, légumineuses.</td></tr>
+        <tr><td>Lipides</td><td class="d">Huile d'olive, avocat, oléagineux, poissons gras, œufs.</td></tr>
+        <tr><td>Compléments étayés</td><td class="d">Créatine monohydrate, protéine en poudre, caféine, bêta-alanine, électrolytes (selon contexte).</td></tr>
+      </tbody></table>
+    </div>
+
+    <h3>Vocabulaire</h3>
+    <div class="sheet">
+      <table><tbody>
+        <tr><td>TDEE</td><td class="d">Dépense énergétique totale du jour : la référence pour situer ses apports.</td></tr>
+        <tr><td>Macronutriments</td><td class="d">Protéines, glucides, lipides — les trois fournisseurs d'énergie et de matériaux.</td></tr>
+        <tr><td>Glycogène</td><td class="d">Réserve de glucides (muscles/foie) ; carburant des efforts intenses.</td></tr>
+        <tr><td>Synthèse protéique</td><td class="d">Construction de protéines musculaires, stimulée par l'entraînement et les protéines.</td></tr>
+        <tr><td>Surplus / déficit</td><td class="d">Manger plus / moins que sa dépense ; pilote prise ou perte.</td></tr>
+        <tr><td>Recomposition</td><td class="d">Gagner du muscle et perdre du gras en parallèle (lent ; surtout chez débutants ou en léger déficit protéiné).</td></tr>
+      </tbody></table>
+    </div>
+
+    <h3>Pour aller plus loin</h3>
+    <ul>
+      <li><b>Un diététicien du sport</b> — pour un plan personnalisé, fiable et adapté à votre vie et vos objectifs.</li>
+      <li><b>Un médecin du sport</b> — en cas de pathologie, de fatigue persistante, de blessures ou avant un gros changement.</li>
+      <li><b>Les positions de sociétés savantes</b> (ex. International Society of Sports Nutrition, ACSM) — pour les synthèses de preuves à jour.</li>
+    </ul>
+
+    <div class="callout c-safe">
+      <div class="ic">💪</div>
+      <div class="bd"><span class="lab">Le mot de la fin</span>
+      <p>Mangez assez, priorisez les protéines, alimentez vos séances en glucides, gardez un socle de lipides, hydratez-vous, dormez — et soyez <b>régulier</b>. C'est moins spectaculaire qu'un régime miracle, mais c'est ce qui construit un physique fort et une performance durable, dans la santé. Bon entraînement ! 💪</p></div>
+    </div>
+  </section>
+
+  </main>
+</div>
+
+<button id="navbtn" aria-label="Ouvrir le sommaire">
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5 L16 12 L9 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<div class="overlay" id="overlay"></div>
+
+<footer>
+  <p><b>Formation Nutrition du sportif — muscu &amp; CrossFit</b> — énergie, macronutriments (protéines, glucides, lipides), prise de masse & sèche saines, timing autour de l'effort, hydratation, compléments étayés, spécificités CrossFit, et un estimateur de repères. Contenu éducatif en fourchettes générales : pour un plan personnalisé, consultez un diététicien ou un médecin du sport.</p>
+  <p style="margin-top:8px;color:var(--ink-faint)">Le repas fait partie de l'entraînement. 💪</p>
+</footer>
+
+<script>
+(function(){
+  // ----- compare tabs (Mythe / Réalité) -----
+  document.querySelectorAll("[data-compare]").forEach(function(cmp){
+    var tabs = cmp.querySelectorAll(".ctab");
+    var panels = cmp.querySelectorAll(".cpanel");
+    tabs.forEach(function(tab){
+      tab.addEventListener("click", function(){
+        var i = +tab.getAttribute("data-tab");
+        tabs.forEach(function(t){ t.classList.remove("active"); });
+        panels.forEach(function(p){ p.classList.remove("active"); });
+        tab.classList.add("active");
+        if (panels[i]) panels[i].classList.add("active");
+      });
+    });
+  });
+
+  // ----- reveal (exemples de journées) -----
+  document.querySelectorAll(".reveal").forEach(function(rev){
+    var btn = rev.querySelector(".reveal-btn");
+    var label = btn.textContent;
+    btn.addEventListener("click", function(){
+      rev.classList.toggle("open");
+      btn.textContent = rev.classList.contains("open") ? label.replace("Voir", "Masquer") : label;
+    });
+  });
+
+  // ----- estimateur de repères -----
+  var act = "high";
+  var poidsEl = document.getElementById("poids");
+  var seg = document.getElementById("seg");
+  var out = document.getElementById("estim-out");
+  var adj = document.getElementById("estim-adj");
+
+  var KCAL = { mod:[28,32], high:[32,37], vhigh:[37,42] };
+  var CARB = { mod:[3,5],  high:[4,7],   vhigh:[6,9] };
+  var PROT = [1.6, 2.2];
+  var FAT  = [0.8, 1.2];
+
+  function r5(x){ return Math.round(x/5)*5; }
+  function r10(x){ return Math.round(x/10)*10; }
+  function range(lo, hi){ return lo + " – " + hi; }
+
+  function card(cls, label, value, unit){
+    return '<div class="ecard '+cls+'"><div class="el">'+label+'</div><div class="en">'+value+'</div><div class="eu">'+unit+'</div></div>';
+  }
+
+  function render(){
+    var w = parseFloat(poidsEl.value);
+    if (!isFinite(w) || w < 35 || w > 200){
+      out.innerHTML = '<div class="ecard" style="grid-column:1/-1"><div class="el">Poids</div><div class="en" style="font-size:14px">Entrez un poids entre 35 et 200 kg</div></div>';
+      adj.innerHTML = "";
+      return;
+    }
+    var kcal = KCAL[act], carb = CARB[act];
+    out.innerHTML =
+      card("kcal", "Énergie de maintien", range(r10(w*kcal[0]), r10(w*kcal[1])), "kcal / jour (estimation)") +
+      card("p", "Protéines", range(r5(w*PROT[0]), r5(w*PROT[1])), "g / jour") +
+      card("c", "Glucides", range(r5(w*carb[0]), r5(w*carb[1])), "g / jour") +
+      card("f", "Lipides", range(r5(w*FAT[0]), r5(w*FAT[1])), "g / jour");
+    adj.innerHTML = "<b>Prise de muscle</b> : viser un léger surplus (≈ +250 à +500 kcal). &nbsp;·&nbsp; <b>Perte de gras</b> : viser un léger déficit (≈ -300 à -500 kcal). Les protéines restent hautes dans les deux cas ; on module surtout les glucides.";
+  }
+
+  seg.querySelectorAll("button").forEach(function(b){
+    b.addEventListener("click", function(){
+      act = b.getAttribute("data-act");
+      seg.querySelectorAll("button").forEach(function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+      render();
+    });
+  });
+  poidsEl.addEventListener("input", render);
+  render();
+
+  // ----- progress bar -----
+  var prog = document.getElementById("top-progress");
+  function onScroll(){ var h=document.documentElement; var max=h.scrollHeight-h.clientHeight; prog.style.width=(max>0?(h.scrollTop||document.body.scrollTop)/max*100:0)+"%"; }
+  window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
+
+  // ----- scroll-spy -----
+  var links = Array.prototype.slice.call(document.querySelectorAll("#toc a"));
+  var map = {}; links.forEach(function(a){ map[a.getAttribute("href").slice(1)] = a; });
+  var sections = links.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); }).filter(Boolean);
+  var spy = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){ if (en.isIntersecting){ links.forEach(function(l){ l.classList.remove("active"); }); var a=map[en.target.id]; if(a) a.classList.add("active"); } });
+  }, { rootMargin: "-16% 0px -76% 0px", threshold: 0 });
+  sections.forEach(function(s){ spy.observe(s); });
+
+  // ----- mobile drawer (chevron) -----
+  var sidebar = document.getElementById("sidebar");
+  var overlay = document.getElementById("overlay");
+  var navbtn = document.getElementById("navbtn");
+  function close(){ sidebar.classList.remove("open"); overlay.classList.remove("show"); navbtn.style.display=""; }
+  function open(){ sidebar.classList.add("open"); overlay.classList.add("show"); navbtn.style.display="none"; }
+  navbtn.addEventListener("click", open);
+  overlay.addEventListener("click", close);
+  sidebar.addEventListener("click", function(e){ if (e.target.tagName === "A") close(); });
+})();
+</script>
+</body>
+</html>
