@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ Effect v4 — Cheat Sheet</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #181b24;
+    --card-hover: #1e2230;
+    --text: #e6e8ee;
+    --muted: #9aa1b2;
+    --code-bg: #10131c;
+    --border: #2a2f3e;
+    --schema: #a78bfa;
+    --services: #60a5fa;
+    --config: #34d399;
+    --schedule: #fbbf24;
+    --cache: #f472b6;
+    --stream: #22d3ee;
+    --http: #fb923c;
+    --test: #a3e635;
+    --good: #34d399;
+    --bad: #f87171;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+    padding-bottom: 4rem;
+  }
+  header {
+    text-align: center;
+    padding: 2.5rem 1rem 1.5rem;
+    background: radial-gradient(ellipse at top, #1e2230 0%, var(--bg) 70%);
+  }
+  header h1 { font-size: 2.2rem; letter-spacing: -0.02em; }
+  header h1 .zap { display: inline-block; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2) rotate(-8deg); } }
+  header p { color: var(--muted); margin-top: 0.4rem; }
+  .search-wrap { max-width: 480px; margin: 1.2rem auto 0; }
+  #search {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color .2s;
+  }
+  #search:focus { border-color: var(--services); }
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(15,17,23,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 1rem;
+    display: flex;
+    gap: 0.4rem;
+    overflow-x: auto;
+    justify-content: safe center;
+  }
+  nav a {
+    white-space: nowrap;
+    padding: 0.35rem 0.8rem;
+    border-radius: 99px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border: 1px solid var(--border);
+    transition: all .15s;
+  }
+  nav a:hover { color: var(--text); background: var(--card-hover); transform: translateY(-1px); }
+  main { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem; }
+  section { margin-bottom: 2.5rem; scroll-margin-top: 4rem; }
+  .section-title {
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+  }
+  .section-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem; }
+  .badge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 99px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.1rem 1.2rem;
+    transition: transform .15s, background .15s;
+  }
+  .card:hover { transform: translateY(-2px); background: var(--card-hover); }
+  .card h3 { font-size: 1rem; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem; }
+  .card.full { grid-column: 1 / -1; }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    overflow-x: auto;
+    font-size: 0.82rem;
+    margin: 0.6rem 0;
+  }
+  code { font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace; }
+  p code, li code, td code {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 0.08rem 0.35rem;
+    border-radius: 5px;
+    font-size: 0.82em;
+    white-space: nowrap;
+  }
+  .kw { color: #c792ea; } .fn { color: #82aaff; } .str { color: #c3e88d; } .cm { color: #5c6370; font-style: italic; } .ty { color: #ffcb6b; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  ul { list-style: none; }
+  ul li { padding: 0.25rem 0 0.25rem 1.4rem; position: relative; font-size: 0.9rem; }
+  ul li::before { content: "→"; position: absolute; left: 0.2rem; color: var(--muted); }
+  ul.do li::before { content: "✅"; font-size: 0.75rem; top: 0.42rem; }
+  ul.dont li::before { content: "🚫"; font-size: 0.75rem; top: 0.42rem; }
+  .tip {
+    border-left: 3px solid var(--schedule);
+    background: rgba(251,191,36,0.06);
+    padding: 0.6rem 0.9rem;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.88rem;
+    margin-top: 0.6rem;
+  }
+  .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 0.6rem; }
+  .vs > div { border-radius: 10px; padding: 0.7rem 0.9rem; font-size: 0.85rem; }
+  .vs .good-box { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.3); }
+  .vs .bad-box { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.3); }
+  .vs strong { display: block; margin-bottom: 0.3rem; }
+  .good-box strong { color: var(--good); }
+  .bad-box strong { color: var(--bad); }
+  .hidden { display: none !important; }
+  footer { text-align: center; color: var(--muted); font-size: 0.8rem; margin-top: 3rem; }
+  @media (max-width: 640px) { .vs { grid-template-columns: 1fr; } header h1 { font-size: 1.6rem; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1><span class="zap">⚡</span> Effect v4 — Cheat Sheet</h1>
+  <p>Les réflexes de prod : Schema · Services · Config · Retry · Cache · Streams · HTTP · Tests</p>
+  <div class="search-wrap">
+    <input id="search" type="search" placeholder="🔍 Filtrer… (ex: retry, cache, TestClock)">
+  </div>
+</header>
+
+<nav>
+  <a href="#boussole">🧭 Boussole</a>
+  <a href="#schema">🧬 Schema</a>
+  <a href="#services">🧩 Services</a>
+  <a href="#config">⚙️ Config</a>
+  <a href="#schedule">⏰ Retry</a>
+  <a href="#cache">💾 Cache</a>
+  <a href="#streams">🌊 Streams</a>
+  <a href="#http">🌐 HTTP</a>
+  <a href="#tests">🧪 Tests</a>
+  <a href="#donots">☠️ Interdits</a>
+</nav>
+
+<main>
+
+<!-- ============ BOUSSOLE ============ -->
+<section id="boussole">
+  <h2 class="section-title">🧭 La boussole — « Je veux… → j'utilise… »</h2>
+  <p class="section-sub">Le guide de sélection rapide. En cas de doute, commence ici.</p>
+  <div class="card full">
+    <table>
+      <thead><tr><th>Je veux…</th><th>J'utilise…</th></tr></thead>
+      <tbody>
+        <tr><td>Un record / objet ordinaire</td><td><code>Schema.Struct(...)</code> + <code>interface</code> du même nom</td></tr>
+        <tr><td>Un ID scalaire / value object</td><td>Schéma brandé contraint</td></tr>
+        <tr><td>Un état interne de workflow</td><td><code>Data.TaggedEnum</code> + <code>$match</code> exhaustif</td></tr>
+        <tr><td>Une union taguée qui traverse une frontière</td><td><code>Schema.TaggedUnion(...)</code> (<code>.cases</code>, <code>.guards</code>, <code>.match</code>)</td></tr>
+        <tr><td>Une erreur typée attendue</td><td><code>Schema.TaggedErrorClass</code></td></tr>
+        <tr><td>Décoder un payload inconnu</td><td><code>Schema.decodeUnknownEffect(...)</code></td></tr>
+        <tr><td>Un service applicatif</td><td><code>Context.Service</code> + <code>Layer.effect</code> + <code>Service.of(...)</code></td></tr>
+        <tr><td>Une méthode de service publique</td><td><code>Effect.fn("Domaine.operation")</code></td></tr>
+        <tr><td>Lire la config runtime</td><td><code>Config</code> dans les layers — jamais <code>process.env</code></td></tr>
+        <tr><td>Réessayer une opération transitoire</td><td><code>Effect.retry(...)</code> avec un <code>Schedule</code> borné</td></tr>
+        <tr><td>Un worker de polling</td><td><code>runPass().pipe(Effect.repeat(Schedule.spaced(...)))</code></td></tr>
+        <tr><td>Un cache par clé avec TTL + dédup</td><td><code>Cache.make(...)</code> / <code>Cache.makeWith(...)</code></td></tr>
+        <tr><td>Mémoïser un seul résultat</td><td><code>Effect.cached(...)</code> / <code>Effect.cachedWithTTL(...)</code></td></tr>
+        <tr><td>Une source d'événements</td><td><code>Stream</code> consommé via <code>Stream.runForEach</code> + <code>Effect.forkScoped</code></td></tr>
+        <tr><td>Batcher N clés en 1 appel (vrai endpoint batch)</td><td><code>Effect.request(...)</code> + <code>RequestResolver</code></td></tr>
+        <tr><td>Un appel HTTP sortant</td><td><code>HttpClient</code> Effect + décodage Schema</td></tr>
+        <tr><td>Tester du temps (sleep, retry, timeout)</td><td><code>TestClock</code>, jamais de vrai sleep</td></tr>
+        <tr><td>Synchroniser des fibers en test</td><td><code>Deferred</code>, <code>Queue</code>, <code>Latch</code>, <code>Ref</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ SCHEMA ============ -->
+<section id="schema">
+  <h2 class="section-title">🧬 Schema & modèles de données <span class="badge" style="background:rgba(167,139,250,.15);color:var(--schema)">SCHEMA.md</span></h2>
+  <p class="section-sub">DTO, contrats wire, brands, variants, décodeurs.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>📦 Le record par défaut</h3>
+<pre><code><span class="kw">export const</span> <span class="ty">User</span> = <span class="fn">Schema.Struct</span>({
+  id: <span class="ty">UserId</span>,
+  name: <span class="ty">Schema.NonEmptyString</span>,
+  email: <span class="fn">Schema.optionalKey</span>(<span class="ty">Schema.String</span>),
+})
+<span class="kw">export interface</span> <span class="ty">User</span>
+  <span class="kw">extends</span> <span class="ty">Schema.Schema.Type</span>&lt;<span class="kw">typeof</span> <span class="ty">User</span>&gt; {}</code></pre>
+      <ul>
+        <li><code>.annotate({ identifier })</code> seulement si un outil le consomme (OpenAPI, RPC…)</li>
+        <li>Réutilise les champs : <code>User.fields.name</code>, <code>Schema.fieldsAssign(...)</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🔓 Construire vs décoder</h3>
+      <table>
+        <tbody>
+          <tr><td><code>schema.make(...)</code></td><td>construction <strong>de confiance</strong> (throw)</td></tr>
+          <tr><td><code>schema.makeEffect(...)</code></td><td>échec dans le canal d'erreur Effect</td></tr>
+          <tr><td><code>decodeUnknownEffect</code></td><td>frontières non fiables — <strong>le défaut</strong></td></tr>
+          <tr><td><code>decodeUnknownSync</code></td><td>scripts, tests, startup uniquement</td></tr>
+          <tr><td><code>decodeUnknownResult</code></td><td>code pur sans Effect</td></tr>
+        </tbody>
+      </table>
+      <div class="tip">💡 Jamais de cast pour esquiver la validation.</div>
+    </div>
+    <div class="card">
+      <h3>❓ Optionalité</h3>
+      <ul>
+        <li><code>Schema.optionalKey(...)</code> → clé JSON absente (le cas courant)</li>
+        <li><code>Schema.optional(...)</code> → seulement si <code>undefined</code> explicite fait partie du contrat</li>
+        <li><code>NullOr</code> / <code>NullishOr</code> → seulement si le null est vraiment encodé</li>
+        <li>Valeurs par défaut = champs <strong>requis</strong>, défaut appliqué au décodage</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🎭 Variants : interne vs frontière</h3>
+<pre><code><span class="cm">// Interne : contrôle de flux</span>
+<span class="kw">type</span> <span class="ty">Step</span> = <span class="ty">Data.TaggedEnum</span>&lt;{
+  Continue: { <span class="kw">readonly</span> cursor: <span class="ty">number</span> }
+  Finished: { <span class="kw">readonly</span> count: <span class="ty">number</span> }
+}&gt;
+<span class="kw">const</span> <span class="ty">Step</span> = <span class="fn">Data.taggedEnum</span>&lt;<span class="ty">Step</span>&gt;()
+<span class="ty">Step</span>.<span class="fn">$match</span>(next, { Continue: ..., Finished: ... })
+
+<span class="cm">// Frontière : décodage / persistance / wire</span>
+<span class="kw">const</span> <span class="ty">Event</span> = <span class="fn">Schema.TaggedUnion</span>({
+  Started:  { runId: <span class="ty">RunId</span> },
+  Finished: { runId: <span class="ty">RunId</span>, result: <span class="ty">Schema.Json</span> },
+})</code></pre>
+      <ul>
+        <li>Discriminant externe (<code>type</code>, <code>kind</code>) : <code>Schema.tag(...)</code> + <code>Schema.toTaggedUnion("type")</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>💥 Erreurs typées</h3>
+<pre><code><span class="kw">export class</span> <span class="ty">PersistenceError</span> <span class="kw">extends</span>
+  <span class="fn">Schema.TaggedErrorClass</span>&lt;<span class="ty">PersistenceError</span>&gt;()(
+    <span class="str">"UserRepo.PersistenceError"</span>,
+    { operation: <span class="ty">Schema.String</span>, cause: <span class="fn">Schema.Defect</span>() },
+  ) {}</code></pre>
+      <ul>
+        <li>Mappe les échecs d'infra en erreurs domaine aux frontières de service</li>
+        <li>Ajoute un label <code>operation</code> pour le diagnostic</li>
+        <li><code>Schema.Defect()</code> pour les payloads de type defect</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🏷️ Valeurs nominales</h3>
+      <ul>
+        <li>IDs et value objects → schémas <strong>brandés contraints</strong></li>
+        <li>Contraintes de schéma normales <em>avant</em> <code>Schema.brand(...)</code></li>
+        <li><code>Schema.fromBrand(...)</code> seulement si le projet utilise déjà des constructeurs <code>Brand</code></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section id="services">
+  <h2 class="section-title">🧩 Services, Layers & modules <span class="badge" style="background:rgba(96,165,250,.15);color:var(--services)">SERVICES_LAYERS.md</span></h2>
+  <p class="section-sub">Tags, surfaces de module, câblage runtime, Effect.fn.</p>
+  <div class="grid">
+    <div class="card full">
+      <h3>🏗️ Le pattern module canonique</h3>
+<pre><code><span class="cm">// user-repo.ts</span>
+<span class="kw">export interface</span> <span class="ty">Interface</span> {
+  <span class="kw">readonly</span> get: (id: <span class="ty">UserId</span>) =&gt; <span class="ty">Effect.Effect</span>&lt;<span class="ty">User</span>, <span class="ty">NotFound</span> | <span class="ty">PersistenceError</span>&gt;
+}
+
+<span class="kw">export class</span> <span class="ty">Service</span> <span class="kw">extends</span> <span class="fn">Context.Service</span>&lt;<span class="ty">Service</span>, <span class="ty">Interface</span>&gt;()(<span class="str">"@app/UserRepo"</span>) {}
+
+<span class="kw">export const</span> layer = <span class="fn">Layer.effect</span>(<span class="ty">Service</span>, <span class="fn">Effect.gen</span>(<span class="kw">function*</span> () {
+  <span class="kw">const</span> sql = <span class="kw">yield*</span> <span class="ty">SqlClient.SqlClient</span>
+  <span class="kw">const</span> get = <span class="fn">Effect.fn</span>(<span class="str">"UserRepo.get"</span>)(<span class="kw">function*</span> (id: <span class="ty">UserId</span>) { <span class="cm">/* ... */</span> })
+  <span class="kw">return</span> <span class="ty">Service</span>.<span class="fn">of</span>({ get })
+}))
+
+<span class="kw">export class</span> <span class="ty">NotFound</span> <span class="kw">extends</span> <span class="fn">Schema.TaggedErrorClass</span>&lt;<span class="ty">NotFound</span>&gt;()(<span class="str">"UserRepo.NotFound"</span>, { id: <span class="ty">UserId</span> }) {}
+
+<span class="kw">export</span> * <span class="kw">as</span> <span class="ty">UserRepo</span> <span class="kw">from</span> <span class="str">"./user-repo.js"</span>  <span class="cm">// auto-export du namespace</span></code></pre>
+      <ul>
+        <li>Le consommateur : <code>const repo = yield* UserRepo.Service</code></li>
+        <li>N'exporte que la surface intentionnelle ; les helpers restent privés</li>
+        <li><code>Effect.fn("Domaine.op")</code> pour toute méthode publique ou interne non triviale ; <code>Effect.fnUntraced</code> pour les helpers sans intérêt de trace</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🧱 Choisir son constructeur de Layer</h3>
+      <table>
+        <tbody>
+          <tr><td><code>Layer.succeed</code></td><td>service déjà construit</td></tr>
+          <tr><td><code>Layer.sync</code></td><td>construction synchrone paresseuse</td></tr>
+          <tr><td><code>Layer.effect</code></td><td>acquisition effectful — <strong>le défaut</strong></td></tr>
+          <tr><td><code>Layer.effectContext</code></td><td>1 acquisition → plusieurs services (stubs de test)</td></tr>
+          <tr><td><code>Layer.unwrap</code></td><td>la config choisit/construit le layer</td></tr>
+          <tr><td><code>Layer.fresh</code></td><td>acquisition isolée (rare, tests)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>🔌 Câblage runtime</h3>
+      <ul>
+        <li><code>Layer.provide(...)</code> → <strong>cache</strong> la dépendance</li>
+        <li><code>Layer.provideMerge(...)</code> → seulement si la dépendance doit rester <strong>exposée</strong></li>
+        <li><code>Layer.mergeAll(...)</code> → layers indépendants exposés</li>
+        <li>Préfère des valeurs de layers plates, triées topologiquement</li>
+      </ul>
+      <div class="tip">⚠️ <code>provideMerge</code> / <code>mergeAll</code> ne sont pas des outils « fais-le compiler ».</div>
+    </div>
+    <div class="card">
+      <h3>♾️ Travail longue durée</h3>
+<pre><code><span class="kw">export const</span> layer = <span class="fn">Layer.effectDiscard</span>(
+  <span class="fn">Effect.gen</span>(<span class="kw">function*</span> () {
+    <span class="kw">const</span> events = <span class="kw">yield*</span> <span class="ty">Events.Service</span>
+    <span class="kw">yield*</span> events.stream.<span class="fn">pipe</span>(
+      <span class="fn">Stream.runForEach</span>(handleEvent),
+      <span class="ty">Effect</span>.forkScoped,  <span class="cm">// ← fork dans le scope du layer</span>
+    )
+  }),
+)</code></pre>
+      <ul>
+        <li>L'acquisition du layer doit <strong>se terminer</strong> — jamais de boucle infinie inline</li>
+        <li><code>Effect.forkScoped</code>, <code>FiberSet</code> ou <code>FiberMap</code></li>
+        <li>Pas de méthode publique <code>start</code> sauf besoin domaine explicite</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🎁 Effect.fn avec transforms</h3>
+<pre><code><span class="kw">const</span> readAttachment = <span class="fn">Effect.fn</span>(<span class="str">"Attachment.read"</span>)(
+  <span class="kw">function*</span> (ref: <span class="ty">AttachmentRef</span>) {
+    <span class="kw">return yield*</span> api.<span class="fn">read</span>(ref)
+  },
+  <span class="cm">// wrapper qui voit les arguments d'origine :</span>
+  (effect, ref) =&gt; effect.<span class="fn">pipe</span>(
+    <span class="fn">attachmentError</span>(<span class="str">"Attachment.read"</span>, { attachmentId: ref.id }),
+  ),
+)</code></pre>
+      <ul>
+        <li>Bons transforms : classification d'erreur, logs, spans, retry, timeout, cleanup</li>
+        <li>1 ou 2 transforms max — le générateur reste focalisé sur le workflow</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONFIG ============ -->
+<section id="config">
+  <h2 class="section-title">⚙️ Config <span class="badge" style="background:rgba(52,211,153,.15);color:var(--config)">CONFIG.md</span></h2>
+  <p class="section-sub">Jamais de <code>process.env</code> dans la logique applicative.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>📖 Les recettes</h3>
+<pre><code><span class="kw">const</span> apiKey  = <span class="kw">yield*</span> <span class="fn">Config.redacted</span>(<span class="str">"API_KEY"</span>)
+<span class="kw">const</span> model   = <span class="kw">yield*</span> <span class="fn">Config.option</span>(<span class="fn">Config.string</span>(<span class="str">"MODEL"</span>))
+<span class="kw">const</span> enabled = <span class="kw">yield*</span> <span class="fn">Config.boolean</span>(<span class="str">"FEATURE_ENABLED"</span>)
+  .<span class="fn">pipe</span>(<span class="fn">Config.withDefault</span>(<span class="kw">false</span>))
+<span class="kw">const</span> dataDir = <span class="kw">yield*</span> <span class="fn">Config.schema</span>(<span class="ty">AbsolutePath</span>, <span class="str">"APP_DATA_DIR"</span>)</code></pre>
+      <ul>
+        <li><code>Config.redacted</code> → credentials, toujours</li>
+        <li><code>Config.option</code> → absence sémantique</li>
+        <li><code>Config.withDefault</code> → donnée manquante seulement ; une valeur malformée échoue quand même</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🌍 Providers</h3>
+      <ul>
+        <li>Défaut : <code>ConfigProvider.fromEnv()</code></li>
+        <li>Tests : <code>ConfigProvider.fromUnknown(...)</code> (déterministe)</li>
+        <li>Remplacer : <code>ConfigProvider.layer(provider)</code></li>
+        <li>Fallback : <code>ConfigProvider.layerAdd(provider)</code> (+ <code>{ asPrimary: true }</code> pour surcharger)</li>
+        <li><code>constantCase</code> → camelCase lit <code>SCREAMING_SNAKE</code></li>
+        <li><code>nested(...)</code> → préfixe de scope</li>
+      </ul>
+      <div class="tip">💡 <code>.env</code> et env vars = sources de démarrage/frontière, pas des lectures en plein workflow métier.</div>
+    </div>
+    <div class="card full">
+      <h3>🎛️ Le duo layer / layerConfig</h3>
+<pre><code><span class="kw">export const</span> layerConfig = (config: <span class="ty">Config.Wrap</span>&lt;<span class="ty">ClientOptions</span>&gt;) =&gt;
+  <span class="fn">Layer.effect</span>(<span class="ty">Client.Service</span>,
+    <span class="fn">Config.unwrap</span>(config).<span class="fn">pipe</span>(
+      <span class="fn">Effect.flatMap</span>(makeClient),
+      <span class="fn">Effect.map</span>((client) =&gt; <span class="ty">Client.Service</span>.<span class="fn">of</span>(client)),
+    ))</code></pre>
+      <ul>
+        <li>Expose <code>layer(options)</code> concret + <code>layerConfig(Config.Wrap&lt;Options&gt;)</code> pour le runtime</li>
+        <li>Test simple : <code>Layer.succeed(AppConfiguration.Service, testConfig)</code> si le décodage Config n'est pas ce qu'on teste</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCHEDULING ============ -->
+<section id="schedule">
+  <h2 class="section-title">⏰ Scheduling & Retry <span class="badge" style="background:rgba(251,191,36,.15);color:var(--schedule)">SCHEDULING.md</span></h2>
+  <p class="section-sub">Fini les <code>while (true)</code> + sleep. <code>Schedule</code> partout.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>🧠 Les règles à retenir</h3>
+      <ul>
+        <li><code>Effect.retry</code> → rejoue les <strong>échecs typés</strong> (pas les defects/interruptions)</li>
+        <li><code>Effect.repeat</code> → répète les <strong>succès</strong> ; un échec stoppe</li>
+        <li>L'effet source tourne <strong>1 fois avant</strong> le schedule</li>
+        <li><code>Schedule.recurs(3)</code> = 3 reprises <em>après</em> le run initial</li>
+        <li><code>spaced</code> = pause après le travail · <code>fixed</code> = cadence alignée</li>
+        <li>Backoff : <code>exponential</code> / <code>fibonacci</code> + <code>jittered</code> (anti-tempête) + <code>upTo({ times })</code></li>
+        <li>Fallback en fin de retries : <code>Effect.retryOrElse(...)</code></li>
+      </ul>
+      <div class="tip">🎯 Retry uniquement à la frontière la plus étroite, avec idempotence <strong>prouvée</strong>.</div>
+    </div>
+    <div class="card">
+      <h3>🔁 Worker de polling</h3>
+<pre><code><span class="kw">const</span> pass = <span class="fn">runPass</span>().<span class="fn">pipe</span>(
+  <span class="fn">Effect.tapError</span>((e) =&gt; <span class="fn">Effect.logError</span>(<span class="str">"Worker.pass_failed"</span>, e)),
+  <span class="ty">Effect</span>.ignore,  <span class="cm">// échecs attendus : loggés, on continue</span>
+)
+<span class="kw">const</span> run = pass.<span class="fn">pipe</span>(
+  <span class="fn">Effect.repeat</span>(<span class="fn">Schedule.spaced</span>(<span class="str">"1 second"</span>)),
+)</code></pre>
+      <ul>
+        <li>Échecs typés gérés <strong>dans la passe</strong>, avant le repeat</li>
+        <li>Les defects continuent de defecter → supervision</li>
+        <li>Récupération de cause seulement aux frontières de supervision</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>📐 Politique de retry réutilisable</h3>
+<pre><code><span class="kw">const</span> retrySchedule = <span class="fn">Schedule.exponential</span>(<span class="str">"100 millis"</span>).<span class="fn">pipe</span>(
+  <span class="ty">Schedule</span>.jittered,
+  <span class="fn">Schedule.upTo</span>({ times: <span class="ty">5</span> }),
+)
+
+<span class="fn">reconcile</span>(target).<span class="fn">pipe</span>(
+  <span class="fn">Effect.retryOrElse</span>(
+    retrySchedule.<span class="fn">pipe</span>(<span class="fn">Schedule.tapInput</span>((e) =&gt; <span class="fn">logRetry</span>(e))),
+    (e) =&gt; <span class="fn">Effect.logError</span>(<span class="str">"reconcile.stopped"</span>, e),
+  ),
+)</code></pre>
+      <ul>
+        <li>Rate-limit provider : <code>Schedule.passthrough</code> + <code>Schedule.modifyDelay</code> → max(backoff, <code>retryAfterMs</code>)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>⏳ Timeouts & délais</h3>
+      <ul>
+        <li><code>Effect.timeout(...)</code> → vraie deadline</li>
+        <li><code>Effect.delay(...)</code> → démarrer plus tard</li>
+        <li><code>Effect.sleep(...)</code> en prod → seulement si dormir <em>est</em> le comportement métier</li>
+        <li>Batch : échecs par item isolés avec <code>tapError</code> + <code>ignore</code> autour de chaque item (<code>Effect.forEach(..., { concurrency })</code>)</li>
+        <li>En test : <code>TestClock</code>, jamais de vrai temps</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CACHE ============ -->
+<section id="cache">
+  <h2 class="section-title">💾 Cache & mémoïsation <span class="badge" style="background:rgba(244,114,182,.15);color:var(--cache)">CACHING.md</span></h2>
+  <p class="section-sub">Stop aux <code>Map</code> + timestamp + boucle de prune maison.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>🗝️ effect/Cache</h3>
+      <ul>
+        <li><code>Cache.make({ capacity, lookup, timeToLive })</code> → TTL fixe pour tout</li>
+        <li><code>Cache.makeWith(lookup, { capacity, timeToLive(exit, key) })</code> → TTL par entrée selon l'<code>Exit</code></li>
+        <li>Dédup <strong>intégrée</strong> : les <code>get</code> concurrents d'une clé manquante partagent 1 lookup</li>
+        <li><code>capacity</code> obligatoire → borne le cache, plus de prune manuel</li>
+        <li><code>invalidate</code> / <code>refresh</code> pour la staleness explicite</li>
+        <li>Ressources à cleanup (connexions) → <code>ScopedCache</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🎯 TTL selon l'Exit</h3>
+<pre><code><span class="kw">const</span> cache = <span class="kw">yield*</span> <span class="fn">Cache.makeWith</span>(
+  (ref: <span class="ty">string</span>) =&gt; <span class="fn">resolveUncached</span>(ref),
+  {
+    capacity: <span class="ty">300</span>,
+    timeToLive: (exit) =&gt;
+      <span class="fn">Exit.isSuccess</span>(exit) &amp;&amp; exit.value.cacheable
+        ? <span class="str">"10 minutes"</span>
+        : <span class="ty">Duration</span>.zero,  <span class="cm">// ← ne cache pas le dégradé</span>
+  },
+)</code></pre>
+      <ul>
+        <li>TTL zéro → échecs transitoires non cachés, sans faire échouer l'appelant</li>
+        <li>Negative-cache court possible pour les échecs stables (not-found)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🧭 Quel outil ?</h3>
+      <table>
+        <tbody>
+          <tr><td>Même clé répétée dans le temps</td><td><code>Cache</code></td></tr>
+          <tr><td>Même clé en rafale concurrente</td><td><code>Cache</code> (lookup partagé)</td></tr>
+          <tr><td>N clés distinctes + endpoint batch réel</td><td><code>Effect.request</code> + <code>RequestResolver</code></td></tr>
+          <tr><td>N clés distinctes, endpoint unitaire</td><td><code>Effect.forEach(..., { concurrency })</code> ± <code>Cache</code></td></tr>
+          <tr><td>Une seule valeur, pas de clé</td><td><code>Effect.cached</code> / <code>cachedWithTTL</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>⚠️ Pièges classiques</h3>
+      <ul class="dont">
+        <li>Cache construit par appel → il ne cache rien. Construis-le <strong>1 fois dans le layer</strong></li>
+        <li>Acquisition de client scopée dans le lookup → acquiers dans le layer (<code>Layer.build</code>), le lookup devient un simple appel</li>
+        <li><code>RequestResolver</code> sur une API REST unitaire → n'apporte rien, c'est une boucle déguisée</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STREAMS ============ -->
+<section id="streams">
+  <h2 class="section-title">🌊 Streams <span class="badge" style="background:rgba(34,211,238,.15);color:var(--stream)">STREAMS.md</span></h2>
+  <p class="section-sub"><code>Stream&lt;A, E, R&gt;</code> : source pull-based, backpressurée — la consommation contrôle la demande.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>🚰 Choisir sa source</h3>
+      <table>
+        <tbody>
+          <tr><td>Valeurs en mémoire</td><td><code>Stream.make</code> / <code>fromIterable</code></td></tr>
+          <tr><td>Frontière callback → queue</td><td><code>Queue</code> + <code>Stream.fromQueue</code></td></tr>
+          <tr><td>Broadcast (tous les abonnés)</td><td><code>PubSub</code> + <code>Stream.fromPubSub</code></td></tr>
+          <tr><td>Valeur courante + changements</td><td><code>SubscriptionRef</code></td></tr>
+          <tr><td>API paginée</td><td><code>Stream.paginate</code> (step déjà effectful)</td></tr>
+          <tr><td>Ticks planifiés avec valeurs</td><td><code>Stream.fromSchedule</code></td></tr>
+          <tr><td>AsyncIterable plateforme</td><td><code>Stream.fromAsyncIterable</code></td></tr>
+          <tr><td>Stream après lecture de services</td><td><code>Stream.unwrap</code></td></tr>
+        </tbody>
+      </table>
+      <div class="tip">🚫 Pas de stream juste pour boucler : effet répété sans valeurs = <code>Effect.repeat</code> + <code>Schedule</code>.</div>
+    </div>
+    <div class="card">
+      <h3>🔧 Transformer & consommer</h3>
+      <table>
+        <tbody>
+          <tr><td>Pur / effectful</td><td><code>map</code> / <code>mapEffect</code></td></tr>
+          <tr><td>Concurrence bornée</td><td><code>mapEffect(fn, { concurrency })</code> (+ <code>unordered: true</code> si l'ordre est indifférent)</td></tr>
+          <tr><td>1 → 0..n sorties</td><td><code>flatMap</code></td></tr>
+          <tr><td>Avec état</td><td><code>mapAccum</code> / <code>mapAccumEffect</code></td></tr>
+          <tr><td>Consommateur à effets</td><td><code>runForEach</code></td></tr>
+          <tr><td>Faire tourner sans les valeurs</td><td><code>runDrain</code></td></tr>
+          <tr><td>Tests / flux finis</td><td><code>take(n)</code> + <code>runCollect</code></td></tr>
+        </tbody>
+      </table>
+      <div class="tip">⚠️ Jamais de <code>runCollect</code> sur un flux de prod non borné.</div>
+    </div>
+    <div class="card">
+      <h3>🏠 Consommateur longue durée</h3>
+<pre><code><span class="kw">export const</span> layer = <span class="fn">Layer.effectDiscard</span>(
+  <span class="fn">Effect.gen</span>(<span class="kw">function*</span> () {
+    <span class="kw">const</span> gateway = <span class="kw">yield*</span> <span class="ty">Gateway.Service</span>
+    <span class="kw">yield*</span> gateway.events.<span class="fn">pipe</span>(
+      <span class="fn">Stream.filter</span>(isMessageEvent),
+      <span class="fn">Stream.runForEach</span>(handleEvent),
+      <span class="ty">Effect</span>.forkScoped,
+    )
+  }),
+)</code></pre>
+      <ul>
+        <li>Le layer possède la durée de vie du stream</li>
+        <li>Interface de service : expose des <code>Stream</code>, garde <code>Queue</code>/<code>Ref</code> privés</li>
+        <li>Travail par clé (session, channel) → helper nommé sur <code>FiberMap</code>, pas des maps de fibers ad hoc</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🛗 Backpressure & buffers</h3>
+      <ul>
+        <li>D'abord la backpressure naturelle ; <code>Stream.buffer</code> seulement pour découpler producteur/consommateur</li>
+        <li><code>"suspend"</code> = backpressure · <code>"dropping"</code> = jette le nouveau · <code>"sliding"</code> = garde le plus récent</li>
+        <li><code>Stream.debounce</code> → période calme · <code>Stream.throttle</code> → débit</li>
+        <li>Erreurs : <code>Stream.mapError</code> aux frontières, <code>catchTag</code>/<code>catchIf</code> typés, <code>catchCause</code> réservé à la supervision</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HTTP ============ -->
+<section id="http">
+  <h2 class="section-title">🌐 HTTP Clients <span class="badge" style="background:rgba(251,146,60,.15);color:var(--http)">HTTP_CLIENTS.md</span></h2>
+  <p class="section-sub">Modules <code>effect/unstable/http/*</code> : HttpClient, HttpClientRequest, HttpClientResponse.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>📮 L'adaptateur possède toute la frontière</h3>
+      <ul>
+        <li>Construire la requête → auth/headers → exécuter → <strong>classifier le status</strong> → décoder le body → mapper en erreurs domaine typées → retry si idempotent</li>
+        <li><code>HttpClientRequest.prependUrl</code> (base URL), <code>bearerToken</code>, <code>acceptJson</code>, <code>schemaBodyJson</code></li>
+        <li><code>HttpClient.filterStatusOk</code> <em>avant</em> de décoder</li>
+        <li><code>HttpClientResponse.schemaBodyJson</code> (body) / <code>schemaJson</code> (status+headers+body)</li>
+        <li>Handlers HTTP entrants fins : décoder, appeler les services, mapper les erreurs — la logique métier vit dans les services</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🔄 Retry & rate limit</h3>
+      <ul>
+        <li><code>HttpClient.retryTransient(...)</code> → transport, timeout, 408, 429, 500, 502, 503, 504</li>
+        <li><code>HttpClient.withRateLimiter(...)</code> → pacing proactif, apprend des headers <code>Retry-After</code> (retry 429 par défaut)</li>
+        <li>Retry métier (payloads provider, idempotence) → <code>Effect.retry</code> au niveau opération (cf. ⏰)</li>
+        <li>Appels provider/réseau <strong>hors</strong> des transactions DB</li>
+      </ul>
+    </div>
+    <div class="card full">
+      <h3>🩹 L'exception raw fetch (si vraiment nécessaire)</h3>
+<pre><code><span class="kw">const</span> request = <span class="fn">Effect.fn</span>(<span class="str">"Provider.request"</span>)(<span class="kw">function*</span> (input: <span class="ty">RequestInput</span>) {
+  <span class="kw">const</span> response = <span class="kw">yield*</span> <span class="fn">Effect.tryPromise</span>({
+    <span class="kw">try</span>: (signal) =&gt; <span class="fn">fetch</span>(input.url, { signal }),  <span class="cm">// ← branche l'AbortSignal !</span>
+    <span class="kw">catch</span>: (cause) =&gt; <span class="kw">new</span> <span class="ty">ProviderError</span>({ operation: <span class="str">"Provider.request"</span>, cause }),
+  })
+  <span class="kw">if</span> (!response.ok) <span class="kw">return yield*</span> <span class="fn">Effect.fail</span>(<span class="kw">new</span> <span class="ty">ProviderRejected</span>({ status: response.status }))
+  <span class="kw">const</span> json = <span class="kw">yield*</span> <span class="fn">Effect.tryPromise</span>({ <span class="kw">try</span>: () =&gt; response.<span class="fn">json</span>(), <span class="kw">catch</span>: toProviderError })
+  <span class="kw">return yield*</span> <span class="fn">Schema.decodeUnknownEffect</span>(<span class="ty">ResponseSchema</span>)(json)
+})</code></pre>
+      <ul>
+        <li>Légitime pour : transports plateforme, contraintes browser/edge, libs qui évitent les APIs unstable</li>
+        <li>Toujours dans un service adaptateur, avec la même discipline de frontière</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTS ============ -->
+<section id="tests">
+  <h2 class="section-title">🧪 Tests <span class="badge" style="background:rgba(163,230,53,.15);color:var(--test)">TESTING.md</span></h2>
+  <p class="section-sub">Déterministe &gt; sleep. Toujours.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>🏁 Les défauts</h3>
+<pre><code>it.<span class="fn">effect</span>(<span class="str">"finds a user"</span>, () =&gt;
+  <span class="fn">Effect.gen</span>(<span class="kw">function*</span> () {
+    <span class="kw">const</span> users = <span class="kw">yield*</span> <span class="ty">UserRepo.Service</span>
+    <span class="kw">const</span> result = <span class="kw">yield*</span> users.<span class="fn">find</span>(<span class="ty">UserId</span>.<span class="fn">make</span>(<span class="str">"u1"</span>))
+    <span class="fn">expect</span>(<span class="fn">Option.isSome</span>(result)).<span class="fn">toBe</span>(<span class="kw">true</span>)
+  }).<span class="fn">pipe</span>(<span class="fn">Effect.provide</span>(<span class="ty">UserRepo</span>.testLayer)),
+)</code></pre>
+      <ul>
+        <li><code>it.effect</code> par défaut ; <code>it.live</code> seulement si le temps réel <em>est</em> le sujet du test</li>
+        <li><code>TestClock.setTime</code> / <code>adjust</code> pour sleeps, schedules, retries, timeouts</li>
+        <li>Fork les effets dormants <strong>avant</strong> d'avancer la TestClock</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🤝 Synchronisation, pas de sleep</h3>
+      <table>
+        <tbody>
+          <tr><td><code>Deferred</code></td><td>signal one-shot (prêt / terminé)</td></tr>
+          <tr><td><code>Queue</code></td><td>passer du travail / des événements observés entre fibers</td></tr>
+          <tr><td><code>Latch</code></td><td>porte ouvrir/fermer réutilisable</td></tr>
+          <tr><td><code>Ref</code></td><td>état d'observation partagé</td></tr>
+        </tbody>
+      </table>
+<pre><code><span class="kw">yield*</span> runWorker.<span class="fn">pipe</span>(<span class="ty">Effect</span>.forkScoped)
+<span class="kw">yield*</span> <span class="fn">Deferred.await</span>(ready)     <span class="cm">// attend le signal…</span>
+<span class="kw">const</span> msg = <span class="kw">yield*</span> <span class="fn">Queue.take</span>(published)  <span class="cm">// …pas une durée</span></code></pre>
+    </div>
+    <div class="card full">
+      <h3>🎭 Stubs de test first-class (double tag)</h3>
+<pre><code><span class="kw">export interface</span> <span class="ty">TestInterface</span> <span class="kw">extends</span> <span class="ty">Interface</span> {
+  <span class="kw">readonly</span> sentMessages: () =&gt; <span class="ty">Effect.Effect</span>&lt;<span class="ty">ReadonlyArray</span>&lt;<span class="ty">Message</span>&gt;&gt;
+  <span class="kw">readonly</span> failNextSend: (error: <span class="ty">SendError</span>) =&gt; <span class="ty">Effect.Effect</span>&lt;<span class="kw">void</span>&gt;
+}
+
+<span class="kw">export const</span> testLayer = <span class="fn">Layer.effectContext</span>(<span class="fn">Effect.gen</span>(<span class="kw">function*</span> () {
+  <span class="kw">const</span> service = <span class="ty">TestService</span>.<span class="fn">of</span>({ <span class="cm">/* même objet pour les 2 tags */</span> })
+  <span class="kw">return</span> <span class="ty">Context</span>.<span class="fn">empty</span>().<span class="fn">pipe</span>(
+    <span class="fn">Context.add</span>(<span class="ty">Service</span>, service),      <span class="cm">// la prod dépend de celui-ci</span>
+    <span class="fn">Context.add</span>(<span class="ty">TestService</span>, service),  <span class="cm">// le test contrôle via celui-là</span>
+  )
+}))</code></pre>
+      <ul>
+        <li>Le même objet derrière les deux tags ; la prod ne connaît que le vrai tag</li>
+        <li><code>Layer.succeed</code> pour les fakes statiques ultra-simples ; <code>Layer.mock</code> pour les mocks partiels dont les membres omis doivent échouer bruyamment</li>
+        <li>Config en test : <code>ConfigProvider.fromUnknown(...)</code> si on teste le décodage, sinon <code>Layer.succeed(AppConfiguration.Service, config)</code></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DO NOTS ============ -->
+<section id="donots">
+  <h2 class="section-title">☠️ Les interdits absolus</h2>
+  <p class="section-sub">Si tu es en train de faire ça, arrête-toi.</p>
+  <div class="grid">
+    <div class="card">
+      <ul class="dont">
+        <li><code>as any</code>, <code>!</code>, casts non vérifiés pour faire taire le typage Effect</li>
+        <li><code>Schema.Class</code> / <code>Schema.TaggedClass</code> comme modèle de données par défaut</li>
+        <li>Classes d'erreur <code>_tag</code> à la main quand <code>Schema.TaggedErrorClass</code> convient</li>
+        <li>Récupération au niveau cause quand l'erreur typée suffit</li>
+        <li><code>Layer.mergeAll</code> / <code>provideMerge</code> en mode « fais-le compiler »</li>
+      </ul>
+    </div>
+    <div class="card">
+      <ul class="dont">
+        <li>Autorité, credentials, persistance ou transports cachés derrière des défauts <code>Context.Reference</code></li>
+        <li><code>Effect.sleep(...)</code> arbitraire en test quand une primitive déterministe existe</li>
+        <li>Caches Map/TTL/prune ou dédup in-flight maison quand <code>effect/Cache</code> convient</li>
+        <li>Retry sans idempotence prouvée</li>
+        <li>Avaler les échecs épuisés sans fallback véridique à la frontière</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Cheat sheet générée depuis <code>.agents/skills/effect/</code> · Effect v4 · Les conventions du projet priment toujours 🤝
+</footer>
+
+<script>
+  const search = document.getElementById("search");
+  const cards = [...document.querySelectorAll(".card")];
+  const sections = [...document.querySelectorAll("section")];
+  search.addEventListener("input", () => {
+    const q = search.value.trim().toLowerCase();
+    if (!q) {
+      cards.forEach(c => c.classList.remove("hidden"));
+      sections.forEach(s => s.classList.remove("hidden"));
+      return;
+    }
+    cards.forEach(c => c.classList.toggle("hidden", !c.textContent.toLowerCase().includes(q)));
+    sections.forEach(s => {
+      const visible = [...s.querySelectorAll(".card")].some(c => !c.classList.contains("hidden"));
+      s.classList.toggle("hidden", !visible);
+    });
+  });
+</script>
+
+</body>
+</html>
